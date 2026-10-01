@@ -1865,14 +1865,9 @@ static void after_pause(){
   tile_askforreset(-1);
   //
 	resync_var();
-#ifdef ME_SOUND
 	if (os9x_apuenabled==2)	S9xSetSoundMute( false );
 	else S9xSetSoundMute( true );
-#endif
 	InitSoundThread();
-	if (os9x_apuenabled==2)	S9xSetSoundMute( false );
-	else S9xSetSoundMute( true );
-#endif
 	set_cpu_clock();
 }
 ////////////////////////////////////////////////////////////////////////////////////////
