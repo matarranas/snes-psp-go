@@ -2,8 +2,8 @@ TARGET = mediaengine
 OBJS = me_stub.o main.o sceMeCore_driver.o sceSysreg_driver371.o
 
 INCDIR =
-CFLAGS = -O2 -G0 -Wall
-CXXFLAGS = $(CFLAGS) -fno-exceptions -fno-rtti
+CFLAGS = -O2 -G0 -Wall -fcommon
+CXXFLAGS = $(CFLAGS) -fno-exceptions -fno-rtti -fpermissive
 ASFLAGS = $(CFLAGS)
 
 BUILD_PRX = 1

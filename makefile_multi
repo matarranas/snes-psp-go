@@ -6,11 +6,12 @@ else
 EMUNAME_VERSION = Snes9xTYLcm Mod 180404
 endif
 
-INCDIR = psp psp/me psp/openspc++ psp/adhoc zlib danzeff
+INCDIR = . psp psp/me psp/openspc++ psp/adhoc zlib danzeff
 
-CFLAGS = -march=allegrex -O2 -G0 -Wall -pipe \
+CFLAGS = -march=allegrex -O2 -G0 -pipe \
 	-fsingle-precision-constant -ffunction-sections -fdata-sections \
-	-DFW3X -DPSP -D__PSP__ -DEMUNAME_VERSION="\"$(EMUNAME_VERSION)\""
+	-DFW3X -DPSP -D__PSP__ -DEMUNAME_VERSION="\"$(EMUNAME_VERSION)\"" \
+	-fcommon -Wno-write-strings -Wno-narrowing -Wno-char-subscripts -Wno-parentheses -Wno-unused-variable -Wno-unused-function
 LDFLAGS =
 
 ifndef ME_ACTIVE
@@ -23,7 +24,7 @@ endif
 
 PSP_FW_VERSION = 371
 
-CXXFLAGS = $(CFLAGS) -fno-exceptions -fno-rtti
+CXXFLAGS = $(CFLAGS) -fno-exceptions -fno-rtti -fpermissive
 ASFLAGS = $(CFLAGS) -c
 
 LIBS = -ljpeg -lpng -lstdc++ \
