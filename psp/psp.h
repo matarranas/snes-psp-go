@@ -207,4 +207,12 @@ typedef struct {
 }
 #endif /* __cplusplus */
 
+#ifdef __cplusplus
+#include <sys/time.h>
+#include <psputils.h>
+static inline int sceKernelLibcGettimeofday(struct timeval *tp, void *tzp) {
+    return sceKernelLibcGettimeofday((struct SceKernelTimeval *)tp, (struct timezone *)tzp);
+}
+#endif
+
 #endif /* __PSP_H__ */
