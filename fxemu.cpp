@@ -610,15 +610,7 @@ void S9xSuperFXExec ()
 	else
 	vCount = fx_ppfFunctionTable[FX_FUNCTION_RUN](nInstructions);*/
 			
-	GSU.vCounter = nInstructions;
-	READR14;
-    while (TF(G) && GSU.vCounter-- > 0)
-	{
-		/* Execute instruction from the pipe, and fetch next byte to the pipe*/
-		uint32	vOpcode = (uint32) PIPE;
-		FETCHPIPE;
-		(*fx_ppfOpcodeTable[(GSU.vStatusReg & 0x300) | vOpcode])();
-	}
+	fx_run(nInstructions);
 	
     /* Store GSU registers */
     //fx_writeRegisterSpaceAfterCheck();

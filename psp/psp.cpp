@@ -728,10 +728,11 @@ static void update_pad(){
 static void set_cpu_clock(){
 
 	switch (os9x_cpuclock){
+		case 222:scePowerSetClockFrequency(222,222,111);break;
 		case 266:scePowerSetClockFrequency(266,266,133);break;
 		case 300:scePowerSetClockFrequency(300,300,150);break;
-		case 333:scePowerSetClockFrequency(333,333,166);break;
-		default :scePowerSetClockFrequency(222,222,111);
+		case 333:
+		default :scePowerSetClockFrequency(333,333,166);break;
 	}
 }
 
@@ -1875,10 +1876,10 @@ static void after_pause(){
 	else S9xSetSoundMute( true );
 #endif
 	InitSoundThread();
-#ifndef ME_SOUND
 	if (os9x_apuenabled==2)	S9xSetSoundMute( false );
 	else S9xSetSoundMute( true );
 #endif
+	set_cpu_clock();
 }
 ////////////////////////////////////////////////////////////////////////////////////////
 // Ge Callback

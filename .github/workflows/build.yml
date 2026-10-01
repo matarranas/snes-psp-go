@@ -1,0 +1,42 @@
+name: Build PSP SNES Emulator
+
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+    branches: [ "**" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: pspdev/pspdev:latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build Media Engine PRX
+        run: |
+          make -C psp/mediaengineprx
+          cp psp/mediaengineprx/mediaengine.prx ./ || true
+
+      - name: Build Snes9xTYL ME (Media Engine Optimized)
+        run: |
+          make me
+
+      - name: Prepare Release Package
+        run: |
+          mkdir -p build_output/snes9xTYL
+          cp EBOOT.PBP build_output/snes9xTYL/
+          if [ -f mediaengine.prx ]; then cp mediaengine.prx build_output/snes9xTYL/; fi
+          if [ -f psp/mediaengineprx/mediaengine.prx ]; then cp psp/mediaengineprx/mediaengine.prx build_output/snes9xTYL/; fi
+          cp -r data build_output/snes9xTYL/ || true
+          cp -r doc build_output/snes9xTYL/ || true
+
+      - name: Upload EBOOT Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Snes9xTYL-Go-Optimized
+          path: build_output/
