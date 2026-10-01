@@ -167,7 +167,7 @@ extern "C" {
 #include "me.h"
 #endif
 
-uint32 caCRC32(uint8 *array, uint32 size, register uint32 crc32 = 0xFFFFFFFF);
+uint32 caCRC32(uint8 *array, uint32 size, uint32 crc32 = 0xFFFFFFFF);
 static int net_waitpause_state(int show_menu);
 static void net_send_state();
 static void net_receive_settings();
@@ -949,7 +949,7 @@ static int me_MixSound(me_sound_t *p){
 				}
 			} else { // paused or apu not enabled
 				//sprintf(me_debug_str,"a%d,p%d\n",*(p->os9x_apuenabled_ptr),*(p->os9x_paused_ptr));
-				register int i,j;
+				int i,j;
 				for (i=0;i<1024*1024;i++) j=j+1;
 			}
 
@@ -1055,7 +1055,7 @@ static int me_MixSound(me_sound_t *p){
 				}
 			} else { // paused or apu not enabled
 				//sprintf(me_debug_str,"a%d,p%d\n",*(p->os9x_apuenabled_ptr),*(p->os9x_paused_ptr));
-				register int i,j;
+				int i,j;
 				for (i=0;i<1024*1024;i++) j=j+1;
 			}
 

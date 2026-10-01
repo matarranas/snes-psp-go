@@ -9,7 +9,7 @@ extern "C" {
 extern int g_Server;
 int load_buffer_settings(uint8 *buffer);
 
-uint32 caCRC32(uint8 *array, uint32 size, register uint32 crc32 = 0xFFFFFFFF);
+uint32 caCRC32(uint8 *array, uint32 size, uint32 crc32 = 0xFFFFFFFF);
 }
 
 extern char os9x_nickname[256];

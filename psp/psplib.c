@@ -165,8 +165,8 @@ char *strcat(char *dest, const char *src){
 }
 
 char *strstr (char *s1, char*s2){
-  register char *p = s1;
-  register int len = strlen (s2);
+  char *p = s1;
+  int len = strlen (s2);
 
   for (; (p = strchr (p, *s2)) != 0; p++)
     {
@@ -216,8 +216,8 @@ char* strrchr(const char *string, int c){
 }
 
 int strcmp(const char *p1, const char *p2){
-	register const unsigned char *s1 = (const unsigned char *) p1;
-	register const unsigned char *s2 = (const unsigned char *) p2;
+	const unsigned char *s1 = (const unsigned char *) p1;
+	const unsigned char *s2 = (const unsigned char *) p2;
 	unsigned char c1, c2;
 
 	do {
@@ -392,10 +392,10 @@ static __inline void	 swapfunc(char *, char *, int, int);
  */
 #define swapcode(TYPE, parmi, parmj, n) { 		\
 	long i = (n) / sizeof (TYPE); 			\
-	register TYPE *pi = (TYPE *) (parmi); 		\
-	register TYPE *pj = (TYPE *) (parmj); 		\
+	TYPE *pi = (TYPE *) (parmi); 		\
+	TYPE *pj = (TYPE *) (parmj); 		\
 	do { 						\
-		register TYPE	t = *pi;		\
+		TYPE	t = *pi;		\
 		*pi++ = *pj;				\
 		*pj++ = t;				\
         } while (--i > 0);				\
