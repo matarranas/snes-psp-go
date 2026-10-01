@@ -103,6 +103,7 @@ extern "C" {
 #ifdef __PSP__
 #include <pspkernel.h>
 #include <psputility.h>
+int sceKernelGetModel(void);
 static inline int kuKernelGetModel(void) { return sceKernelGetModel(); }
 #endif
 

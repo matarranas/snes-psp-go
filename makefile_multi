@@ -8,11 +8,13 @@ endif
 
 INCDIR = . psp psp/me psp/openspc++ psp/adhoc zlib danzeff
 
-CFLAGS = -march=allegrex -O2 -G0 -pipe -std=gnu99 \
+COMMON_FLAGS = -march=allegrex -O2 -G0 -pipe \
 	-fsingle-precision-constant -ffunction-sections -fdata-sections \
 	-DFW3X -DPSP -D__PSP__ -DEMUNAME_VERSION="\"$(EMUNAME_VERSION)\"" \
-	-fcommon -Wno-error -Wno-implicit-function-declaration -Wno-incompatible-pointer-types -Wno-builtin-declaration-mismatch \
-	-Wno-write-strings -Wno-narrowing -Wno-char-subscripts -Wno-parentheses -Wno-unused-variable -Wno-unused-function -Wno-register
+	-fcommon -Wno-error -Wno-write-strings -Wno-narrowing -Wno-char-subscripts \
+	-Wno-parentheses -Wno-unused-variable -Wno-unused-function
+
+CFLAGS = $(COMMON_FLAGS) -std=gnu99 -Wno-implicit-function-declaration -Wno-incompatible-pointer-types -Wno-builtin-declaration-mismatch
 LDFLAGS =
 
 ifndef ME_ACTIVE
@@ -25,8 +27,8 @@ endif
 
 PSP_FW_VERSION = 371
 
-CXXFLAGS = $(CFLAGS) -std=gnu++11 -fno-exceptions -fno-rtti -fpermissive -Wno-register
-ASFLAGS = $(CFLAGS) -c
+CXXFLAGS = $(COMMON_FLAGS) -std=gnu++11 -fno-exceptions -fno-rtti -fpermissive -Wno-register
+ASFLAGS = $(COMMON_FLAGS) -c
 
 LIBS = -ljpeg -lpng -lstdc++ \
 	-lpspaudio -lpsppower -lpsputility -lpspwlan \
