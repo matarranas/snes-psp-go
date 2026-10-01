@@ -130,7 +130,7 @@ __asm__ (
 PSP_MODULE_INFO("snes9xTYL", 0, 1, 0);
 /* Define the main thread's attribute value (optional) */
 //PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_VFPU);
-PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER|PSP_THREAD_ATTR_VFPU);
+PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_USER|PSP_THREAD_ATTR_VFPU);
 PSP_MAIN_THREAD_STACK_SIZE_KB(256); /* smaller stack for kernel thread */
 //7000 not enough
 //9000 not enough rom ok next ng
