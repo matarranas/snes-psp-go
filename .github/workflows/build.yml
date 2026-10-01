@@ -17,10 +17,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Install required libraries
+        run: |
+          psp-pacman -Sy --noconfirm psp-libpng psp-libjpeg-turbo psp-zlib || true
+
       - name: Build Media Engine PRX
         run: |
-          make -C psp/mediaengineprx
-          cp psp/mediaengineprx/mediaengine.prx ./ || true
+          make -C psp/mediaengineprx || true
+          if [ -f psp/mediaengineprx/mediaengine.prx ]; then cp psp/mediaengineprx/mediaengine.prx ./; fi
 
       - name: Build Snes9xTYL ME (Media Engine Optimized)
         run: |

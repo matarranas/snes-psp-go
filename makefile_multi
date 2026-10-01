@@ -9,10 +9,9 @@ endif
 INCDIR = psp psp/me psp/openspc++ psp/adhoc zlib danzeff
 
 CFLAGS = -march=allegrex -O2 -G0 -Wall -pipe \
-	-fsingle-precision-constant -fpredictive-commoning -ffunction-sections -frename-registers -fno-gcse \
-	-finline-functions -finline-limit=20000 -falign-functions=64 -falign-loops=64 -fno-align-jumps -fno-align-labels \
+	-fsingle-precision-constant -ffunction-sections -fdata-sections \
 	-DFW3X -DPSP -D__PSP__ -DEMUNAME_VERSION="\"$(EMUNAME_VERSION)\""
-LDFLAGS = -fwhole-program
+LDFLAGS =
 
 ifndef ME_ACTIVE
 USE_USER_LIBS = 1
@@ -28,7 +27,7 @@ CXXFLAGS = $(CFLAGS) -fno-exceptions -fno-rtti
 ASFLAGS = $(CFLAGS) -c
 
 LIBS = -ljpeg -lpng -lstdc++ \
-	-lpspaudio -lpsppower -lpsputility -lpspwlan -lpspkubridge \
+	-lpspaudio -lpsppower -lpsputility -lpspwlan \
 	-lpspgum_vfpu -lpspvfpu -lpspgu \
 	-lpspusb -lpspusbstor
 

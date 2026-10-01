@@ -101,7 +101,9 @@ extern const char *S9xGetSaveFilename( const char *e );
 
 extern "C" {
 #ifdef __PSP__
-#include <kubridge.h>
+#include <pspkernel.h>
+#include <psputility.h>
+static inline int kuKernelGetModel(void) { return sceKernelGetModel(); }
 #endif
 
 #include "cheats.h"
