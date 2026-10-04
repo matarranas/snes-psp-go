@@ -1810,7 +1810,7 @@ static void resync_var(){
     if (os9x_fskipvalue==AUTO_FSKIP) {
     	Settings.SkipFrames=AUTO_FRAMERATE;
     	os9x_autofskip_SkipFrames=0;
-    	os9x_speedlimit=1;
+    	os9x_speedlimit=0;
     } else Settings.SkipFrames=os9x_fskipvalue;
 
     //uncaching stuff
@@ -2282,7 +2282,7 @@ void S9xProcessEvents( bool8 block ) {
 		if (os9x_fskipvalue==AUTO_FSKIP) {
 			Settings.SkipFrames=AUTO_FRAMERATE;
 			os9x_autofskip_SkipFrames=0;
-			os9x_speedlimit=1;
+			os9x_speedlimit=0;
 
 			str = s9xTYL_msg[VIDEO_FSKIP_AUTO];
 		} else {
@@ -2304,7 +2304,7 @@ void S9xProcessEvents( bool8 block ) {
 		else os9x_fskipvalue=0;
 		if (os9x_fskipvalue==AUTO_FSKIP) {
 			Settings.SkipFrames=AUTO_FRAMERATE;
-			os9x_speedlimit=1;
+			os9x_speedlimit=0;
 			os9x_autofskip_SkipFrames=0;
 
 			str = s9xTYL_msg[VIDEO_FSKIP_AUTO];
@@ -2445,7 +2445,7 @@ static void initvar_withdefault() {
 	os9x_fskipvalue=0;
 	os9x_autofskip_MaxSkipFrames=9;
 	os9x_autofskip_SkipFrames=0;
-	os9x_speedlimit=1;
+	os9x_speedlimit=0;
 
 	os9x_forcepal_ntsc=1; //most pal games have black bottom borders
 #ifdef ME_SOUND
