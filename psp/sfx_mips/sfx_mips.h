@@ -49,6 +49,9 @@ void mips_fx_mult(struct FxRegs_s *gsu, int reg);
 void mips_fx_umult(struct FxRegs_s *gsu, int reg);
 void mips_fx_fmult(struct FxRegs_s *gsu);
 
+/* Monolithic Fast Core Dispatcher */
+void mips_sfx_run(uint32_t nInstructions);
+
 #ifdef __cplusplus
 }
 #endif

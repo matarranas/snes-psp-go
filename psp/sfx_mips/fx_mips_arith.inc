@@ -93,9 +93,9 @@
     andi    $t2, $t2, 0xFFFF
     subu    $t3, $t2, $t1           /* s = SREG - Rn */
 
-    /* Carry: s >= 0 (Borrow clear) */
-    sge     $t4, $t3, $zero
-    andi    $t4, $t4, 1
+    /* Carry: s >= 0 (Borrow clear) -> not (s < 0) */
+    slt     $t4, $t3, $zero
+    xori    $t4, $t4, 1
     sw      $t4, GSU_VCARRY_OFF($s0)
 
     /* Overflow: (SREG ^ Rn) & ~(Rn ^ s) & 0x8000 */
@@ -133,8 +133,9 @@
     subu    $t3, $t2, $t1
     subu    $t3, $t3, $t7           /* s = SREG - Rn - Borrow */
 
-    sge     $t4, $t3, $zero
-    andi    $t4, $t4, 1
+    /* Carry: s >= 0 (Borrow clear) -> not (s < 0) */
+    slt     $t4, $t3, $zero
+    xori    $t4, $t4, 1
     sw      $t4, GSU_VCARRY_OFF($s0)
 
     xor     $t5, $t2, $t1
@@ -167,8 +168,9 @@
     andi    $t2, $t2, 0xFFFF
     subu    $t3, $t2, $t1
 
-    sge     $t4, $t3, $zero
-    andi    $t4, $t4, 1
+    /* Carry: s >= 0 (Borrow clear) -> not (s < 0) */
+    slt     $t4, $t3, $zero
+    xori    $t4, $t4, 1
     sw      $t4, GSU_VCARRY_OFF($s0)
 
     xor     $t5, $t2, $t1
