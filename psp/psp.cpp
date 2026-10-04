@@ -1917,17 +1917,16 @@ static void GeCallback(int id, void *arg)
 	s_iFrameReal++;
 	sceKernelLibcGettimeofday( &now, 0 );
 	if (os9x_showfps) {
-		diff  = (now.tv_sec - s_tvStart.tv_sec) * 1000000 + now.tv_usec - s_tvStart.tv_usec;
-		diff /= 1000000;
-		if ( diff>=2 ) {
-				fps_val = s_iFrame/diff;
-				real_fps_val = s_iFrameReal/diff;
+		diff  = (unsigned long long)(now.tv_sec - s_tvStart.tv_sec) * 1000000ULL + (now.tv_usec - s_tvStart.tv_usec);
+		if ( diff>=500000ULL ) {
+				fps_val = (int)(((unsigned long long)s_iFrame * 1000000ULL) / diff);
+				real_fps_val = (int)(((unsigned long long)s_iFrameReal * 1000000ULL) / diff);
 				s_tvStart = now;
 				s_iFrame  = 0;
 				s_iFrameReal=0;
 		}
 
-		if (fps_val) {
+		if (fps_val >= 0) {
 			buf[0] = ((fps_val / 100)%10) + '0';
 			buf[1] = ((fps_val / 10)%10) + '0';
 			buf[2] = (fps_val % 10) + '0';
@@ -1935,12 +1934,14 @@ static void GeCallback(int id, void *arg)
 			buf[4] = 'P';
 			buf[5] = 'S';
 			buf[6] = '\0';
+			pgFillBox((CMAX_X - 7) * 8 - 2, 0, 479, 17, 0x8000); // Opaque black background box
 			pgPrintBG( CMAX_X - 7, 0, 0xffff, buf );
 		}
-		if (real_fps_val) {
+		if (real_fps_val >= 0) {
 			buf[0] = ((real_fps_val / 100)%10) + '0';
 			buf[1] = ((real_fps_val / 10)%10) + '0';
 			buf[2] = (real_fps_val % 10) + '0';
+			buf[3] = '\0';
 			pgPrintBG( CMAX_X - 7, 1, 0xffff, buf );
 		}
 	}
@@ -2449,7 +2450,7 @@ static void initvar_withdefault() {
 
 	os9x_forcepal_ntsc=1; //most pal games have black bottom borders
 #ifdef ME_SOUND
-	os9x_sndfreq = 44100;
+	os9x_sndfreq = 22050;
 #else
 	os9x_sndfreq = 22050;
 #endif

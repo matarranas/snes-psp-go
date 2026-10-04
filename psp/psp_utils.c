@@ -23,7 +23,7 @@ static void check_settings(){
 	if (os9x_apu_ratio<16) os9x_apu_ratio=192; //default value
 	if (os9x_apu_ratio>512) os9x_apu_ratio=192; //default value
 	os9x_hack=os9x_hack&(PPU_IGNORE_FIXEDCOLCHANGES|PPU_IGNORE_WINDOW|PPU_IGNORE_ADDSUB|PPU_IGNORE_PALWRITE|GFX_FASTMODE7|HIRES_FIX);
-	if ((os9x_sndfreq!=11025)&&(os9x_sndfreq!=22050)&&(os9x_sndfreq!=33075)&&(os9x_sndfreq!=44100)) os9x_sndfreq=44100;
+	if ((os9x_sndfreq!=11025)&&(os9x_sndfreq!=22050)&&(os9x_sndfreq!=33075)&&(os9x_sndfreq!=44100)) os9x_sndfreq=22050;
 	if (os9x_padindex>5) os9x_padindex=0;
 	//for an access to menu
 #ifndef HOME_HOOK
