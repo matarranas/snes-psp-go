@@ -75,18 +75,21 @@ ifdef ME_ACTIVE
 INCDIR += psp/mediaengineprx
 OBJS += $(MEOBJ)
 CFLAGS += -DME_SOUND
+CXXFLAGS += -DME_SOUND
 endif
 
 ifdef HOME_HOOK_ON
 INCDIR += psp/homehookprx
 OBJS += $(HOMEHOOKOBJ)
 CFLAGS += -DHOME_HOOK
+CXXFLAGS += -DHOME_HOOK
 endif
 
 ifdef USE_ADHOC
 LIBS += -lpspnet_adhoc -lpspnet_adhocctl -lpspnet_adhocmatching
 OBJS += $(NETOBJ)
 CFLAGS+= -DUSE_ADHOC
+CXXFLAGS+= -DUSE_ADHOC
 endif
 
 ifdef FAT_SUPPORT
@@ -94,6 +97,7 @@ CFLAGS+= -DFAT_SUPPORT
 endif
 
 CFLAGS += -DNOKERNEL
+CXXFLAGS += -DNOKERNEL
 
 # Rules to make libraries
 
