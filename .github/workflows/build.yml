@@ -35,12 +35,14 @@ jobs:
       - name: Prepare Release Package
         run: |
           mkdir -p build_output/snes9xTYL/DATA
-          cp EBOOT.PBP build_output/snes9xTYL/
-          cp mediaengine.prx build_output/snes9xTYL/
-          cp homehook.prx build_output/snes9xTYL/
-          cp data/snesadvance.dat build_output/snes9xTYL/DATA/
-          cp -r data build_output/snes9xTYL/data || true
-          cp -r doc build_output/snes9xTYL/ || true
+          ls -la
+          cp -f EBOOT.PBP build_output/snes9xTYL/ || cp -f *.PBP build_output/snes9xTYL/ || true
+          cp -f mediaengine.prx build_output/snes9xTYL/ || true
+          cp -f homehook.prx build_output/snes9xTYL/ || true
+          cp -f data/snesadvance.dat build_output/snes9xTYL/DATA/ || true
+          cp -rf data build_output/snes9xTYL/data || true
+          cp -rf doc build_output/snes9xTYL/ || true
+          ls -la build_output/snes9xTYL/
 
       - name: Upload EBOOT Artifact
         uses: actions/upload-artifact@v4
