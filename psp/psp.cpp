@@ -133,11 +133,8 @@ PSP_MAIN_THREAD_STACK_SIZE_KB(256); /* smaller stack for kernel thread */
 //14000x
 //28000x
 //PSP_HEAP_SIZE_MAX();
-#ifdef FAT_SUPPORT
-PSP_HEAP_SIZE_KB(-256);
-#else
-PSP_HEAP_SIZE_KB(12000);
-#endif
+// Reserve heap leaving 1024KB free for thread stacks and system
+PSP_HEAP_SIZE_KB(-1024);
 
 #ifdef PROFILE
 profile_t profile_data;
@@ -1538,7 +1535,7 @@ static void InitSoundThread(){
 	if (g_sndthread!=-1) return;
 	//me_startproc((u32)me_function, (u32)me_data); // [jonny]
 
-	g_sndthread = sceKernelCreateThread( "sound thread", (SceKernelThreadEntry)S9xProcessSound, 0x12, 256*1024, PSP_THREAD_ATTR_USER, 0 );
+	g_sndthread = sceKernelCreateThread( "sound thread", (SceKernelThreadEntry)S9xProcessSound, 0x12, 64*1024, PSP_THREAD_ATTR_USER, 0 );
 	if ( g_sndthread < 0 ){
 		char err_msg[256];
 		sprintf(err_msg, "Thread failed (0x%08X)", (unsigned int)g_sndthread);
@@ -3836,7 +3833,7 @@ void me_apu_debug(int flag)
 			//InitSoundThread();
 
 		if (g_sndthread!=-1) {ErrorExit( "Thread Exist" );return;}
-		g_sndthread = sceKernelCreateThread( "sound thread", (SceKernelThreadEntry)me_apu_debug_S9xProcessSound, 0x12, 256*1024, PSP_THREAD_ATTR_USER, 0 );
+		g_sndthread = sceKernelCreateThread( "sound thread", (SceKernelThreadEntry)me_apu_debug_S9xProcessSound, 0x12, 64*1024, PSP_THREAD_ATTR_USER, 0 );
 		if ( g_sndthread < 0 ){
 			char err_msg[256];
 			sprintf(err_msg, "Thread failed (0x%08X)", (unsigned int)g_sndthread);
