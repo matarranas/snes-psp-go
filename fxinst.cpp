@@ -145,6 +145,7 @@
 
 #include "fxemu.h"
 #include "fxinst.h"
+#include "sfx_mips/sfx_mips.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -184,7 +185,7 @@ static inline void fx_stop()
 }
 
 /* 01 - nop - no operation */
-static inline void fx_nop() { CLRFLAGS; R15++; }
+static inline void fx_nop() { mips_fx_nop(&GSU); }
 
 //extern void fx_flushCache();
 
@@ -225,26 +226,13 @@ static inline void fx_cache()
 /* 03 - lsr - logic shift right */
 static inline void fx_lsr()
 {
-    uint32 v;
-    GSU.vCarry = SREG & 1;
-    v = USEX16(SREG) >> 1;
-    R15++; DREG = v;
-    GSU.vSign = v;
-    GSU.vZero = v;
-    TESTR14;
-    CLRFLAGS;
+    mips_fx_lsr(&GSU);
 }
 
 /* 04 - rol - rotate left */
 static inline void fx_rol()
 {
-    uint32 v = USEX16((SREG << 1) + GSU.vCarry);
-    GSU.vCarry = (SREG >> 15) & 1;
-    R15++; DREG = v;
-    GSU.vSign = v;
-    GSU.vZero = v;
-    TESTR14;
-    CLRFLAGS;
+    mips_fx_rol(&GSU);
 }
 
 /* 05 - bra - branch always */
@@ -375,13 +363,7 @@ static inline void fx_stb_r11() { FX_STB(11); }
 /* 3c - loop - decrement loop counter, and branch on not zero */
 static inline void fx_loop()
 {
-    GSU.vSign = GSU.vZero = --R12;
-    if( (uint16) R12 != 0 )
-	R15 = R13;
-    else
-	R15++;
-
-    CLRFLAGS;
+    mips_fx_loop(&GSU);
 }
 
 /* 3d - alt1 - set alt1 mode */
@@ -637,14 +619,7 @@ static inline void fx_rpix_obj()
 /* 4d - swap - swap upper and lower byte of a register */
 static inline void fx_swap()
 {
-    uint8 c = (uint8)SREG;
-    uint8 d = (uint8)(SREG>>8);
-    uint32 v = (((uint32)c)<<8)|((uint32)d);
-    R15++; DREG = v;
-    GSU.vSign = v;
-    GSU.vZero = v;
-    TESTR14;
-    CLRFLAGS;
+    mips_fx_swap(&GSU);
 }
 
 /* 4e - color - copy source register to color register */
@@ -685,12 +660,7 @@ static inline void fx_cmode()
 /* 4f - not - perform exclusive exor with 1 on all bits */
 static inline void fx_not()
 {
-    uint32 v = ~SREG;
-    R15++; DREG = v;
-    GSU.vSign = v;
-    GSU.vZero = v;
-    TESTR14;
-    CLRFLAGS;
+    mips_fx_not(&GSU);
 }
 
 /* 50-5f - add rn - add, register + register */
@@ -911,14 +881,7 @@ static inline void fx_cmp_r15() { FX_CMP(15); }
 /* 70 - merge - R7 as upper byte, R8 as lower byte (used for texture-mapping) */
 static inline void fx_merge()
 {
-    uint32 v = (R7&0xff00) | ((R8&0xff00)>>8);
-    R15++; DREG = v;
-    GSU.vOverflow = (v & 0xc0c0) << 16;
-    GSU.vZero = !(v & 0xf0f0);
-    GSU.vSign = ((v | (v<<8)) & 0x8000);
-    GSU.vCarry = (v & 0xe0e0) != 0;
-    TESTR14;
-    CLRFLAGS;
+    mips_fx_merge(&GSU);
 }
 
 /* 71-7f - and rn - reister & register */
@@ -1136,25 +1099,13 @@ static inline void fx_link_i4() { FX_LINK_I(4); }
 /* 95 - sex - sign extend 8 bit to 16 bit */
 static inline void fx_sex()
 {
-    uint32 v = (uint32)SEX8(SREG);
-    R15++; DREG = v;
-    GSU.vSign = v;
-    GSU.vZero = v;
-    TESTR14;
-    CLRFLAGS;
+    mips_fx_sex(&GSU);
 }
 
 /* 96 - asr - aritmetric shift right by one */
 static inline void fx_asr()
 {
-    uint32 v;
-    GSU.vCarry = SREG & 1;
-    v = (uint32)(SEX16(SREG)>>1);
-    R15++; DREG = v;
-    GSU.vSign = v;
-    GSU.vZero = v;
-    TESTR14;
-    CLRFLAGS;
+    mips_fx_asr(&GSU);
 }
 
 /* 96(ALT1) - div2 - aritmetric shift right by one */
@@ -1177,13 +1128,7 @@ static inline void fx_div2()
 /* 97 - ror - rotate right by one */
 static inline void fx_ror()
 {
-    uint32 v = (USEX16(SREG)>>1) | (GSU.vCarry<<15);
-    GSU.vCarry = SREG & 1;
-    R15++; DREG = v;
-    GSU.vSign = v;
-    GSU.vZero = v;
-    TESTR14;
-    CLRFLAGS;
+    mips_fx_ror(&GSU);
 }
 
 /* 98-9d - jmp rn - jump to address of register */
@@ -1213,26 +1158,13 @@ static inline void fx_ljmp_r13() { FX_LJMP(13); }
 /* 9e - lob - set upper byte to zero (keep low byte) */
 static inline void fx_lob()
 {
-    uint32 v = USEX8(SREG);
-    R15++; DREG = v;
-    GSU.vSign = v<<8;
-    GSU.vZero = v<<8;
-    TESTR14;
-    CLRFLAGS;
+    mips_fx_lob(&GSU);
 }
 
 /* 9f - fmult - 16 bit to 32 bit signed multiplication, upper 16 bits only */
 static inline void fx_fmult()
 {
-    uint32 v;
-    uint32 c = (uint32) (SEX16(SREG) * SEX16(R6));
-    v = c >> 16;
-    R15++; DREG = v;
-    GSU.vSign = v;
-    GSU.vZero = v;
-    GSU.vCarry = (c >> 15) & 1;
-    TESTR14;
-    CLRFLAGS;
+    mips_fx_fmult(&GSU);
 }
 
 /* 9f(ALT1) - lmult - 16 bit to 32 bit signed multiplication */
@@ -1350,12 +1282,7 @@ static inline void fx_from_r15() { FX_FROM(15); }
 /* c0 - hib - move high-byte to low-byte */
 static inline void fx_hib()
 {
-    uint32 v = USEX8(SREG>>8);
-    R15++; DREG = v;
-    GSU.vSign = v<<8;
-    GSU.vZero = v<<8;
-    TESTR14;
-    CLRFLAGS;
+    mips_fx_hib(&GSU);
 }
 
 /* c1-cf - or rn */
