@@ -7,9 +7,6 @@ extern "C" {
 
 #include "fxinst.h"
 
-/* Pointer to GSU state */
-extern struct FxRegs_s GSU;
-
 /* Native MIPS Allegrex Super FX Opcode Implementations */
 void mips_fx_stop(struct FxRegs_s *gsu);
 void mips_fx_nop(struct FxRegs_s *gsu);
