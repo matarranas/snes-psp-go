@@ -186,6 +186,9 @@ void S9xMainLoop (void)
 		}
         else
         {
+			S9xPackStatus ();
+			S9xSyncSpeed ();
+			CPU.Flags &= ~SCAN_KEYS_FLAG;
             finishedFrame = false;
             break;
         }
