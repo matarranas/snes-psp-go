@@ -2428,9 +2428,9 @@ static void initvar_withdefault() {
 	os9x_OBJ=1;*/
 	os9x_easy=0;
 	os9x_render=2;  //zoom 4/3 (tv mode)
-	os9x_showfps=0;
+	os9x_showfps=1;
 	os9x_showpass=0;
-	os9x_vsync=1;
+	os9x_vsync=0;
 	os9x_cpuclock=333;
 	//os9x_SA1_exec=1;
 	os9x_SFX_overclock=20;
