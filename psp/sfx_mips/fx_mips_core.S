@@ -53,8 +53,12 @@ mips_sfx_run:
     /* Increment R15 (PC) */
     addiu   $s2, $s2, 1
 
-    /* Calculate dispatch address in jump table: table + (opcode * 4) */
-    sll     $t4, $t3, 2             /* Opcode * 4 */
+    /* Calculate dispatch address in 1024-entry jump table:
+     * Index = (vStatusReg & 0x300) | opcode
+     */
+    andi    $t4, $s6, 0x0300
+    or      $t4, $t4, $t3           /* Full opcode index (0-1023) */
+    sll     $t4, $t4, 2             /* Index * 4 */
     la      $t5, fx_mips_jump_table
     addu    $t5, $t5, $t4
     lw      $t6, 0($t5)             /* Target handler address */
@@ -62,20 +66,21 @@ mips_sfx_run:
     nop                             /* Branch delay slot */
 
 /* =========================================================================
- * Opcode Handlers
+ * Opcode Handlers (Base Group)
  * ========================================================================= */
 
 .Lop_nop:
     /* NOP: CLRFLAGS; R15 already incremented */
     andi    $s6, $s6, 0xEFFF        /* Clear ALT1, ALT2, B flags */
+    addu    $s4, $s0, $zero
     j       .Lfx_dispatch_loop
-    nop
+    addu    $s5, $s0, $zero
 
 .Lop_stop:
     /* STOP: Clear G flag, set counter = 0 */
     andi    $s6, $s6, 0xFFDF        /* Clear G flag */
     j       .Lfx_exit_loop
-    nop
+    move    $s1, $zero
 
 .Lop_swap:
     /* SWAP: Swap bytes of SREG */
@@ -88,8 +93,9 @@ mips_sfx_run:
     sw      $t1, GSU_VSIGN_OFF($s0) /* vSign = result */
     sw      $t1, GSU_VZERO_OFF($s0) /* vZero = result */
     andi    $s6, $s6, 0xEFFF        /* CLRFLAGS */
+    addu    $s4, $s0, $zero
     j       .Lfx_dispatch_loop
-    nop
+    addu    $s5, $s0, $zero
 
 .Lop_not:
     /* NOT: Bitwise NOT of SREG */
@@ -100,8 +106,9 @@ mips_sfx_run:
     sw      $t1, GSU_VSIGN_OFF($s0)
     sw      $t1, GSU_VZERO_OFF($s0)
     andi    $s6, $s6, 0xEFFF        /* CLRFLAGS */
+    addu    $s4, $s0, $zero
     j       .Lfx_dispatch_loop
-    nop
+    addu    $s5, $s0, $zero
 
 .Lop_sex:
     /* SEX: Sign extend 8-bit to 16-bit */
@@ -112,8 +119,9 @@ mips_sfx_run:
     sw      $t1, GSU_VSIGN_OFF($s0)
     sw      $t1, GSU_VZERO_OFF($s0)
     andi    $s6, $s6, 0xEFFF        /* CLRFLAGS */
+    addu    $s4, $s0, $zero
     j       .Lfx_dispatch_loop
-    nop
+    addu    $s5, $s0, $zero
 
 .Lop_fmult:
     /* FMULT: 16-bit signed multiplication using MIPS hardware MULT */
@@ -132,11 +140,16 @@ mips_sfx_run:
     andi    $t5, $t5, 1
     sw      $t5, GSU_VCARRY_OFF($s0)
     andi    $s6, $s6, 0xEFFF        /* CLRFLAGS */
+    addu    $s4, $s0, $zero
     j       .Lfx_dispatch_loop
-    nop
+    addu    $s5, $s0, $zero
+
+/* Include Monolithic Handlers (Branches, Shifts, Modes, Arithmetic) */
+#include "fx_mips_handlers.inc"
+#include "fx_mips_arith.inc"
 
 .Lop_default_fallback:
-    /* Default fallback for remaining opcodes: loop continuation */
+    /* Default fallback: loop continuation for unimplemented opcodes */
     j       .Lfx_dispatch_loop
     nop
 
@@ -145,6 +158,8 @@ mips_sfx_run:
     sw      $s2, GSU_R15_OFF($s0)   /* Save R15 (PC) */
     sw      $s6, GSU_STATUS_OFF($s0)/* Save vStatusReg */
     sw      $s1, GSU_VCOUNT_OFF($s0)/* Save remaining cycle count */
+    sw      $s4, GSU_SREG_OFF($s0)  /* Save pvSreg */
+    sw      $s5, GSU_DREG_OFF($s0)  /* Save pvDreg */
 
     /* Restore callee-saved registers */
     lw      $s0, 8($sp)
@@ -163,57 +178,5 @@ mips_sfx_run:
     nop
 .end mips_sfx_run
 
-/* =========================================================================
- * Direct Threaded Jump Table (256 Opcode entries)
- * ========================================================================= */
-.data
-.align 4
-.globl fx_mips_jump_table
-fx_mips_jump_table:
-    .word .Lop_stop                 /* 0x00: STOP */
-    .word .Lop_nop                  /* 0x01: NOP */
-    .word .Lop_default_fallback     /* 0x02: CACHE */
-    .word .Lop_default_fallback     /* 0x03: LSR */
-    .word .Lop_default_fallback     /* 0x04: ROL */
-    .word .Lop_default_fallback     /* 0x05: BRA */
-    .word .Lop_default_fallback     /* 0x06: BGE */
-    .word .Lop_default_fallback     /* 0x07: BLT */
-    .word .Lop_default_fallback     /* 0x08: BNE */
-    .word .Lop_default_fallback     /* 0x09: BEQ */
-    .word .Lop_default_fallback     /* 0x0A: BPL */
-    .word .Lop_default_fallback     /* 0x0B: BMI */
-    .word .Lop_default_fallback     /* 0x0C: BCC */
-    .word .Lop_default_fallback     /* 0x0D: BCS */
-    .word .Lop_default_fallback     /* 0x0E: BVC */
-    .word .Lop_default_fallback     /* 0x0F: BVS */
-    
-    /* 0x10 - 0x4C (Fill default fallbacks) */
-    .rept 61
-    .word .Lop_default_fallback
-    .endr
-
-    .word .Lop_swap                 /* 0x4D: SWAP */
-    .word .Lop_default_fallback     /* 0x4E: COLOR */
-    .word .Lop_not                  /* 0x4F: NOT */
-
-    /* 0x50 - 0x94 */
-    .rept 70
-    .word .Lop_default_fallback
-    .endr
-
-    .word .Lop_sex                  /* 0x95: SEX */
-    .word .Lop_default_fallback     /* 0x96: ASR */
-    .word .Lop_default_fallback     /* 0x97: ROR */
-    .word .Lop_default_fallback     /* 0x98: JMP R8 */
-    .word .Lop_default_fallback     /* 0x99: JMP R9 */
-    .word .Lop_default_fallback     /* 0x9A: JMP R10 */
-    .word .Lop_default_fallback     /* 0x9B: JMP R11 */
-    .word .Lop_default_fallback     /* 0x9C: JMP R12 */
-    .word .Lop_default_fallback     /* 0x9D: JMP R13 */
-    .word .Lop_default_fallback     /* 0x9E: LOB */
-    .word .Lop_fmult                /* 0x9F: FMULT */
-
-    /* 0xA0 - 0xFF */
-    .rept 96
-    .word .Lop_default_fallback
-    .endr
+/* Include the 1024-entry Jump Table */
+#include "fx_mips_table.inc"
