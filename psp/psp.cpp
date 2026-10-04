@@ -1538,9 +1538,11 @@ static void InitSoundThread(){
 	if (g_sndthread!=-1) return;
 	//me_startproc((u32)me_function, (u32)me_data); // [jonny]
 
-	g_sndthread = sceKernelCreateThread( "sound thread", (SceKernelThreadEntry)S9xProcessSound, 0x8, 256*1024, 0, 0 );
+	g_sndthread = sceKernelCreateThread( "sound thread", (SceKernelThreadEntry)S9xProcessSound, 0x12, 256*1024, PSP_THREAD_ATTR_USER, 0 );
 	if ( g_sndthread < 0 ){
-		ErrorExit( "Thread failed" );
+		char err_msg[256];
+		sprintf(err_msg, "Thread failed (0x%08X)", (unsigned int)g_sndthread);
+		ErrorExit( err_msg );
 		return;
 	}
 	Settings.SoundPlaybackRate = os9x_sndfreq;
@@ -3834,8 +3836,13 @@ void me_apu_debug(int flag)
 			//InitSoundThread();
 
 		if (g_sndthread!=-1) {ErrorExit( "Thread Exist" );return;}
-		g_sndthread = sceKernelCreateThread( "sound thread", (SceKernelThreadEntry)me_apu_debug_S9xProcessSound, 0x8, 256*1024, 0, 0 );
-		if ( g_sndthread < 0 ){ErrorExit( "Thread failed" );return;}
+		g_sndthread = sceKernelCreateThread( "sound thread", (SceKernelThreadEntry)me_apu_debug_S9xProcessSound, 0x12, 256*1024, PSP_THREAD_ATTR_USER, 0 );
+		if ( g_sndthread < 0 ){
+			char err_msg[256];
+			sprintf(err_msg, "Thread failed (0x%08X)", (unsigned int)g_sndthread);
+			ErrorExit( err_msg );
+			return;
+		}
 //		Settings.SoundPlaybackRate = os9x_sndfreq;
 //		snd_freqratio = (u32)(Settings.SoundPlaybackRate)*(1<<16) / 44100;
 //		snd_freqerr=0;
