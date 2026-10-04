@@ -2636,10 +2636,6 @@ int main(int argc,char **argv) {
     mod = pspSdkLoadStartModule(str, PSP_MEMORY_PARTITION_KERNEL);
     if( mod < 0 )
     {
-        mod = sceKernelLoadStartModule(str, 0, NULL);
-    }
-    if( mod < 0 )
-    {
         char err_msg[256];
         sprintf(err_msg, " Error loading/mediaengine (0x%08X)\nPath: %s", (unsigned int)mod, str);
         ErrorExit(err_msg);
@@ -2671,7 +2667,6 @@ int main(int argc,char **argv) {
     // Might want to set frequency here as well
     sprintf(str,"%s/%s",LaunchDir,"homehook.prx");
 	  mod = pspSdkLoadStartModule(str, PSP_MEMORY_PARTITION_KERNEL);
-	  if (mod < 0) mod = sceKernelLoadStartModule(str, 0, NULL);
 	  if (mod < 0)
 	  {
 		char err_msg[256];
