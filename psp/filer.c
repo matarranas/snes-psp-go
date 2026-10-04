@@ -407,19 +407,7 @@ int getFilePath(char *out,int can_exit) {
 		}
 		if (!g_bLoop) {retval=0;break;}
 		
-		for (;;) {
-			sceKernelLibcGettimeofday( &filer_cur, 0 );
-			if ( timercmp( &filer_next, &filer_cur, < ) ){
-				break;
-  		}
-  	}
-  	filer_next=filer_cur;
-  	filer_next.tv_usec+=33*1000; //ms
-  	while ( filer_next.tv_usec >= 1000000 ){
-	  	filer_next.tv_sec += 1;
-      filer_next.tv_usec -= 1000000;
-	  }
-		counter++;
+		pgWaitV();
 		current_smoothing = 3 + roundf(sinf(counter * 3.14159 / 30) * 3);
 		new_pad=0;
     if (!pad_cnt) {
@@ -731,19 +719,7 @@ int getNoExtFilePath(char *out,int can_exit) {
 		}
 		if (!g_bLoop) {retval=0;break;}
 		
-		for (;;) {
-			sceKernelLibcGettimeofday( &filer_cur, 0 );
-			if ( timercmp( &filer_next, &filer_cur, < ) ){
-				break;  		
-  		}
-  	}
-  	filer_next=filer_cur;
-  	filer_next.tv_usec+=33*1000; //ms
-  	while ( filer_next.tv_usec >= 1000000 ){
-	  	filer_next.tv_sec += 1;
-      filer_next.tv_usec -= 1000000;
-	  }
-		
+		pgWaitV();
 		if (!((cpt_lowbat++)&127)) os9x_lowbat=scePowerIsLowBattery();
 		
 		show_bg(filer_bg);

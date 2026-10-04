@@ -1434,7 +1434,7 @@ static void menu_stopmusic() {
 	free(menu_musicdata);
 	menu_music=0;
 #ifndef ME_SOUND
-	scePowerSetClockFrequency(222,222,111);
+	scePowerSetClockFrequency(333,333,166);
 #endif
 }
 
@@ -3865,7 +3865,7 @@ static void menu_drawFrame(int selected) {
 		while(g_bSleep) pgWaitVn(10);			//wait 16*10 ms
 #ifdef ME_SOUND
 //20080420
-//		scePowerSetClockFrequency(222,222,111);
+//		scePowerSetClockFrequency(333,333,166);
 		sceGuDisplay(1);
 		if (os9x_menumusic) menu_startmusic();
 #endif
@@ -4084,7 +4084,7 @@ int root_menu(void) {
 			}
 		}
 #ifndef ME_SOUND
-		scePowerSetClockFrequency(222,222,111);
+		scePowerSetClockFrequency(333,333,166);
 #endif
 		os9x_menufx=old_menufx;
 		pg_drawframe^=1;
@@ -4349,7 +4349,7 @@ int root_menu(void) {
 			}
 		}
 #ifndef ME_SOUND
-		scePowerSetClockFrequency(222,222,111);
+		scePowerSetClockFrequency(333,333,166);
 #endif
 		pg_drawframe^=1;
 		pgCopyScreen();
