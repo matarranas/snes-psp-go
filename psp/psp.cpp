@@ -2633,10 +2633,17 @@ int main(int argc,char **argv) {
 
     sprintf(str,"%s/%s",LaunchDir,"mediaengine.prx");
 
-    if( (mod = pspSdkLoadStartModule(str, PSP_MEMORY_PARTITION_KERNEL)) < 0 )
+    mod = pspSdkLoadStartModule(str, PSP_MEMORY_PARTITION_KERNEL);
+    if( mod < 0 )
     {
-		ErrorExit(" Error loading/mediaengine");
- 		return 0;
+        mod = sceKernelLoadStartModule(str, 0, NULL);
+    }
+    if( mod < 0 )
+    {
+        char err_msg[256];
+        sprintf(err_msg, " Error loading/mediaengine (0x%08X)\nPath: %s", (unsigned int)mod, str);
+        ErrorExit(err_msg);
+        return 0;
     }
 
 	me_data = (volatile struct me_struct*)malloc_64( sizeof( struct me_struct ) );  // [Shoey]
@@ -2663,10 +2670,13 @@ int main(int argc,char **argv) {
 //#endif
     // Might want to set frequency here as well
     sprintf(str,"%s/%s",LaunchDir,"homehook.prx");
-	  if ( (mod = pspSdkLoadStartModule(str, PSP_MEMORY_PARTITION_KERNEL)) < 0)
+	  mod = pspSdkLoadStartModule(str, PSP_MEMORY_PARTITION_KERNEL);
+	  if (mod < 0) mod = sceKernelLoadStartModule(str, 0, NULL);
+	  if (mod < 0)
 	  {
-		ErrorExit(" Error loading/homehook");
-//        sceKernelDelayThread(3*1000*1000);
+		char err_msg[256];
+		sprintf(err_msg, " Error loading/homehook (0x%08X)\nPath: %s", (unsigned int)mod, str);
+		ErrorExit(err_msg);
  		return 0;
 	  }
     initHomeButton(devkit_version);
