@@ -1669,20 +1669,19 @@ static inline void fx_sm_r13() { FX_SM(13); }
 static inline void fx_sm_r14() { FX_SM(14); }
 static inline void fx_sm_r15() { FX_SM(15); }
 
-extern void (*fx_apfOpcodeTable[])();
-
 /*** GSU executions functions ***/
 
-uint32 fx_run(uint32 nInstructions)
+static uint32 fx_run(uint32 nInstructions)
 {
     GSU.vCounter = nInstructions;
     READR14;
-    while (TF(G) && (GSU.vCounter-- > 0))
-    {
-        uint32 vOpcode = (uint32)PIPE;
-        FETCHPIPE;
-        fx_apfOpcodeTable[(GSU.vStatusReg & 0x300) | vOpcode]();
-    }
+    while( TF(G) && (GSU.vCounter-- > 0) )
+	FX_STEP;
+ /*
+#ifndef FX_ADDRESS_CHECK
+    GSU.vPipeAdr = USEX16(R15-1) | (USEX8(GSU.vPrgBankReg)<<16);
+#endif
+*/
     return (nInstructions - GSU.vInstCount);
 }
 
