@@ -2440,11 +2440,11 @@ static void initvar_withdefault() {
 	os9x_apuenabled=2;
 
 	os9x_gammavalue=0;
-	os9x_fastsprite=0;
+	os9x_fastsprite=1;
 	os9x_softrendering=3;//psp accel+acur. soft
 	os9x_smoothing=1;
-	os9x_fskipvalue=0;
-	os9x_autofskip_MaxSkipFrames=9;
+	os9x_fskipvalue=10; // AUTO frameskip
+	os9x_autofskip_MaxSkipFrames=2; // Max skip 2 frames to maintain smoothness
 	os9x_autofskip_SkipFrames=0;
 	os9x_speedlimit=0;
 
