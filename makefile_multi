@@ -69,7 +69,8 @@ ZLIBOBJ = zlib/adler32.o zlib/compress.o zlib/crc32.o zlib/gzio.o \
 
 DANZOBJ = danzeff/danzeff.o
 
-SFX_MIPS_OBJ = psp/sfx_mips/fx_adc.o psp/sfx_mips/fx_add.o psp/sfx_mips/fx_alt1.o \
+SFX_MIPS_OBJ = psp/sfx_mips/fx_mips_core.o \
+	psp/sfx_mips/fx_adc.o psp/sfx_mips/fx_add.o psp/sfx_mips/fx_alt1.o \
 	psp/sfx_mips/fx_alt2.o psp/sfx_mips/fx_alt3.o psp/sfx_mips/fx_and.o \
 	psp/sfx_mips/fx_asr.o psp/sfx_mips/fx_bcc.o psp/sfx_mips/fx_bcs.o \
 	psp/sfx_mips/fx_beq.o psp/sfx_mips/fx_bic.o psp/sfx_mips/fx_bmi.o \
