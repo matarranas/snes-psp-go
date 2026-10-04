@@ -103,8 +103,8 @@ extern "C" {
 #ifdef __PSP__
 #include <pspkernel.h>
 #include <psputility.h>
-int sceKernelGetModel(void);
-static inline int kuKernelGetModel(void) { return sceKernelGetModel(); }
+// PSP Go and Slim models have 64MB RAM
+static inline int kuKernelGetModel(void) { return 4; }
 #endif
 
 #include "cheats.h"

@@ -30,7 +30,7 @@ PSP_FW_VERSION = 371
 CXXFLAGS = $(COMMON_FLAGS) -std=gnu++11 -fno-exceptions -fno-rtti -fpermissive -Wno-register
 ASFLAGS = $(COMMON_FLAGS) -c
 
-LIBS = -ljpeg -lpng -lstdc++ \
+LIBS = -ljpeg -lpng -lz -lstdc++ \
 	-lpspaudio -lpsppower -lpsputility -lpspwlan \
 	-lpspgum_vfpu -lpspvfpu -lpspgu \
 	-lpspusb -lpspusbstor
@@ -69,7 +69,7 @@ ZLIBOBJ = zlib/adler32.o zlib/compress.o zlib/crc32.o zlib/gzio.o \
 
 DANZOBJ = danzeff/danzeff.o
 
-OBJS = $(PLATFORMOBJ) $(PSP_OBJECTS) $(ZLIBOBJ) $(SPCOBJ) $(DANZOBJ)
+OBJS = $(PLATFORMOBJ) $(PSP_OBJECTS) $(SPCOBJ) $(DANZOBJ)
 
 ifdef ME_ACTIVE
 INCDIR += psp/mediaengineprx
