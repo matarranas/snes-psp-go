@@ -2462,7 +2462,7 @@ static void initvar_withdefault() {
 #endif
 
 	// special hack
-	os9x_hack=0;
+	os9x_hack = 9; // PPU_IGNORE_PALWRITE | PPU_IGNORE_FIXEDCOLCHANGES
 
 	//default inputs
 	os9x_inputs_analog=0;
