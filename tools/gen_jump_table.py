@@ -46,12 +46,28 @@ for alt in range(4):
     table[base + 0x9F] = ".Lop_fmult"
     # 0xC0: HIB
     table[base + 0xC0] = ".Lop_hib"
+    # 0x10 - 0x1F: TO Rn
+    for r in range(16):
+        table[base + 0x10 + r] = ".Lop_to_rn"
+    # 0x20 - 0x2F: WITH Rn
+    for r in range(16):
+        table[base + 0x20 + r] = ".Lop_with_rn"
+    # 0xA0 - 0xAF: IBT Rn
+    for r in range(16):
+        table[base + 0xA0 + r] = ".Lop_ibt_rn"
+    # 0xB0 - 0xBF: FROM Rn
+    for r in range(16):
+        table[base + 0xB0 + r] = ".Lop_from_rn"
     # 0xD0 - 0xDE: INC
     for r in range(15):
         table[base + 0xD0 + r] = ".Lop_inc_rn"
     # 0xE0 - 0xEE: DEC
     for r in range(15):
         table[base + 0xE0 + r] = ".Lop_dec_rn"
+    # 0xF0 - 0xFF (ALT0/ALT2/ALT3): IWT Rn (Note: ALT1 is LM)
+    if alt != 1:
+        for r in range(16):
+            table[base + 0xF0 + r] = ".Lop_iwt_rn"
 
 # ALT0 specifics (alt = 0)
 for r in range(16):

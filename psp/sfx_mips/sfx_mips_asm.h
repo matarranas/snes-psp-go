@@ -40,7 +40,11 @@
 #define GSU_VCARRY_OFF    124
 #define GSU_VOVERFLOW_OFF 128
 
-#define GSU_PBR_PTR       328
-#define GSU_VCOUNT_OFF    852
+#define GSU_ROMBUF_OFF    108
+#define GSU_PIPE_OFF      109
+
+#define GSU_ROMBANK_PTR   468
+#define GSU_PBR_PTR       472
+#define GSU_VCOUNT_OFF    2036
 
 #endif /* _SFX_MIPS_ASM_H_ */
