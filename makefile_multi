@@ -8,8 +8,10 @@ endif
 
 INCDIR = . psp psp/me psp/openspc++ psp/adhoc zlib danzeff
 
-COMMON_FLAGS = -march=allegrex -O2 -G0 -pipe \
+COMMON_FLAGS = -march=allegrex -O3 -G0 -pipe \
 	-fsingle-precision-constant -ffunction-sections -fdata-sections \
+	-fomit-frame-pointer -funroll-loops -finline-functions -fno-strict-aliasing \
+	-mno-check-zero-division -ffast-math \
 	-DFW3X -DPSP -D__PSP__ -DEMUNAME_VERSION="\"$(EMUNAME_VERSION)\"" \
 	-fcommon -Wno-error -Wno-write-strings -Wno-narrowing -Wno-char-subscripts \
 	-Wno-parentheses -Wno-unused-variable -Wno-unused-function

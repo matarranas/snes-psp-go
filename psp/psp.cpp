@@ -2433,7 +2433,7 @@ static void initvar_withdefault() {
 	os9x_vsync=1;
 	os9x_cpuclock=333;
 	//os9x_SA1_exec=1;
-	os9x_SFX_overclock=100;
+	os9x_SFX_overclock=20;
 	os9x_vol_adjust=100;
 	
 	os9x_apuenabled=2;
@@ -3620,7 +3620,7 @@ static int init_snes_rom() {
   Settings.Paused = FALSE;
   Settings.HBlankStart = (256 * Settings.H_Max) / SNES_HCOUNTER_MAX;
   
-  os9x_SFX_overclock = 100;
+  os9x_SFX_overclock = 20;
   os9x_vol_adjust=100;
   os9x_applyhacks = 1;
     
