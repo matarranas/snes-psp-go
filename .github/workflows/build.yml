@@ -23,32 +23,17 @@ jobs:
 
       - name: Build Snes9xTYL ME (Media Engine Optimized)
         run: |
-          make me
-          echo "=== Files after make me ==="
-          ls -la
+          make me V=1
 
       - name: Prepare Release Package
         run: |
           mkdir -p build_output/snes9xTYL/DATA
-          ls -la
-          # If EBOOT.PBP was not created, build it from TARGET or snes9xTYL.prx
-          if [ ! -f EBOOT.PBP ]; then
-            echo "Checking for prx or elf files..."
-            ls -la *.prx *.elf || true
-            PRX_FILE=$(ls *.prx 2>/dev/null | grep -v mediaengine | grep -v homehook | head -n 1)
-            if [ -n "$PRX_FILE" ]; then
-              mksfo "$EMUNAME_VERSION" PARAM.SFO || true
-              pack-pbp EBOOT.PBP PARAM.SFO data/icon0.png NULL NULL NULL NULL "$PRX_FILE" NULL || true
-            fi
-          fi
-          test -f EBOOT.PBP || { echo "ERROR: EBOOT.PBP could not be generated!"; exit 1; }
-          cp -f EBOOT.PBP build_output/snes9xTYL/
-          cp -f mediaengine.prx build_output/snes9xTYL/ || true
-          cp -f homehook.prx build_output/snes9xTYL/ || true
-          cp -f data/snesadvance.dat build_output/snes9xTYL/DATA/ || true
-          cp -rf data build_output/snes9xTYL/data || true
-          cp -rf doc build_output/snes9xTYL/ || true
-          ls -la build_output/snes9xTYL/
+          cp EBOOT.PBP build_output/snes9xTYL/
+          cp mediaengine.prx build_output/snes9xTYL/
+          cp homehook.prx build_output/snes9xTYL/
+          cp data/snesadvance.dat build_output/snes9xTYL/DATA/
+          cp -r data build_output/snes9xTYL/data || true
+          cp -r doc build_output/snes9xTYL/ || true
 
       - name: Upload EBOOT Artifact
         uses: actions/upload-artifact@v4

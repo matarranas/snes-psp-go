@@ -120,7 +120,5 @@ CXXFLAGS += -DNOKERNEL
 PSPSDK = $(shell psp-config --pspsdk-path)
 include $(PSPSDK)/lib/build.mak
 
-all: $(EXTRA_TARGETS)
-
 clean:
 OBJS += $(MEOBJ) $(NETOBJ) $(HOMEHOOKOBJ)
