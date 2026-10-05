@@ -68,10 +68,8 @@ ZLIBOBJ = zlib/adler32.o zlib/compress.o zlib/crc32.o zlib/gzio.o \
 	zlib/infback.o zlib/inftrees.o zlib/inffast.o
 
 DANZOBJ = danzeff/danzeff.o
-
-SFX_MIPS_OBJ = psp/sfx_mips/fx_mips_core.o
-
-OBJS = $(PLATFORMOBJ) $(PSP_OBJECTS) $(SPCOBJ) $(DANZOBJ) $(SFX_MIPS_OBJ)
+ 
+OBJS = $(PLATFORMOBJ) $(PSP_OBJECTS) $(SPCOBJ) $(DANZOBJ)
 
 ifdef ME_ACTIVE
 INCDIR += psp/mediaengineprx
