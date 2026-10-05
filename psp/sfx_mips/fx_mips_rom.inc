@@ -148,6 +148,7 @@
 
 /* =========================================================================
  * JMP Rn (0x98 - 0x9D, ALT0): R15 = GSU.avReg[n]; CLRFLAGS;
+ * No R15++, no FETCHPIPE here - dispatch loop handles FETCHPIPE at top.
  * ========================================================================= */
 .Lop_jmp:
     andi    $t0, $t3, 0x0F              /* n = opcode & 0x0F */
@@ -155,11 +156,6 @@
     addu    $t0, $s0, $t0               /* &GSU.avReg[n] */
     lw      $s2, 0($t0)                 /* R15 = GSU.avReg[n] */
     andi    $s2, $s2, 0xFFFF
-
-    /* Fetch opcode at target into GSU.vPipe */
-    addu    $t2, $s3, $s2
-    lbu     $t7, 0($t2)
-    sb      $t7, GSU_PIPE_OFF($s0)
 
     andi    $s6, $s6, 0xEFFF            /* CLRFLAGS */
     addu    $s4, $s0, $zero
@@ -192,19 +188,29 @@
     lw      $s2, 0($s4)
     andi    $s2, $s2, 0xFFFF
 
-    /* Invalidate cache and update base */
+    /* Invalidate cache: bCacheActive = FALSE; then fx_cache() logic; then R15-- */
+    sb      $zero, GSU_BCACHEACTIVE_OFF($s0)   /* bCacheActive = FALSE */
+
+    /* fx_cache() inline: if (vCacheBaseReg != c || !bCacheActive) { invalidate } */
     andi    $t4, $s2, 0xFFF0            /* c = R15 & 0xFFF0 */
-    sw      $zero, GSU_CACHEFLAG_OFF($s0)
-    sw      $t4, GSU_CACHEBASE_OFF($s0)
-    li      $t5, 1
-    sb      $t5, GSU_BCACHEACTIVE_OFF($s0)
+    lw      $t5, GSU_CACHEBASE_OFF($s0)
+    lbu     $t6, GSU_BCACHEACTIVE_OFF($s0)
+    bne     $t4, $t5, 1f                /* if base changed */
+    beqz    $t6, 1f                     /* or cache was inactive */
+    j       2f                          /* else cache valid, skip invalidate */
+    nop
+1:
+    sw      $zero, GSU_CACHEFLAG_OFF($s0)    /* vCacheFlags = 0 */
+    sw      $t4, GSU_CACHEBASE_OFF($s0)      /* vCacheBaseReg = c */
+    li      $t7, 1
+    sb      $t7, GSU_BCACHEACTIVE_OFF($s0)   /* bCacheActive = TRUE */
+2:
 
-    /* Fetch opcode from new program bank at R15 into pipe */
-    addu    $t6, $s3, $s2
-    lbu     $t7, 0($t6)
-    sb      $t7, GSU_PIPE_OFF($s0)
+    /* fx_cache does R15++; compensate with R15-- */
+    addiu   $s2, $s2, -1                /* R15-- */
 
-    andi    $s6, $s6, 0xEFFF            /* CLRFLAGS */
+    /* CLRFLAGS */
+    andi    $s6, $s6, 0xEFFF
     addu    $s4, $s0, $zero
     j       .Lfx_dispatch_loop
     addu    $s5, $s0, $zero

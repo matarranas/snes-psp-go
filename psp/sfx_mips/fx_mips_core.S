@@ -209,11 +209,15 @@ mips_sfx_run:
 
 .Lfx_exit_loop:
     /* Epilogue: Save updated registers back to struct FxRegs_s GSU */
-    sw      $s2, GSU_R15_OFF($s0)   /* Save R15 (PC) */
-    sw      $s6, GSU_STATUS_OFF($s0)/* Save vStatusReg */
-    sw      $s1, GSU_VCOUNT_OFF($s0)/* Save remaining cycle count */
-    sw      $s4, GSU_SREG_OFF($s0)  /* Save pvSreg */
-    sw      $s5, GSU_DREG_OFF($s0)  /* Save pvDreg */
+    sw      $s2, GSU_R15_OFF($s0)       /* Save R15 (PC) */
+    sw      $s6, GSU_STATUS_OFF($s0)    /* Save vStatusReg */
+    sw      $s1, GSU_VCOUNT_OFF($s0)    /* Save remaining cycle count */
+    sw      $s4, GSU_SREG_OFF($s0)      /* Save pvSreg */
+    sw      $s5, GSU_DREG_OFF($s0)      /* Save pvDreg */
+    sw      $s3, GSU_PBR_PTR($s0)       /* Save pvPrgBank */
+
+    /* Save cache state for C++ fallback */
+    sw      $zero, GSU_CACHEFLAG_OFF($s0)  /* vCacheFlags = 0 (conservative) */
 
     /* Restore callee-saved registers */
     lw      $s0, 8($sp)

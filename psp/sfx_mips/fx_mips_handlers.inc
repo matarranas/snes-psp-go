@@ -38,26 +38,27 @@
 
 /* 0x05: BRA - Branch Always */
 .Lop_bra:
-    lbu     $t0, GSU_PIPE_OFF($s0)  /* $t0 = v (offset from PIPE) */
-    seb     $t0, $t0                /* sign-extend 8-bit offset */
-    addiu   $s2, $s2, 1             /* R15++ */
+    addiu   $s2, $s2, 1             /* R15++ (skip opcode, point to offset byte) */
     andi    $t1, $s2, 0xFFFF
     addu    $t2, $s3, $t1
-    lbu     $t7, 0($t2)             /* FETCHPIPE */
-    sb      $t7, GSU_PIPE_OFF($s0)  /* PIPE = PRGBANK(R15) */
+    lbu     $t7, 0($t2)             /* FETCHPIPE: load offset byte */
+    sb      $t7, GSU_PIPE_OFF($s0)
+    lbu     $t0, GSU_PIPE_OFF($s0)  /* $t0 = offset from PIPE */
+    seb     $t0, $t0                /* sign-extend 8-bit offset */
     addu    $s2, $s2, $t0           /* R15 += SEX8(v) */
     j       .Lfx_dispatch_loop
     nop
 
 /* 0x06: BLT - Branch on Less Than ((TEST_S != 0) != (TEST_OV != 0)) */
 .Lop_blt:
-    lbu     $t0, GSU_PIPE_OFF($s0)  /* $t0 = v (offset from PIPE) */
-    seb     $t0, $t0                /* sign-extend 8-bit offset */
-    addiu   $s2, $s2, 1             /* R15++ */
+    addiu   $s2, $s2, 1             /* R15++ (skip opcode, point to offset byte) */
     andi    $t1, $s2, 0xFFFF
     addu    $t2, $s3, $t1
-    lbu     $t7, 0($t2)             /* FETCHPIPE */
-    sb      $t7, GSU_PIPE_OFF($s0)  /* PIPE = PRGBANK(R15) */
+    lbu     $t7, 0($t2)             /* FETCHPIPE: load offset byte */
+    sb      $t7, GSU_PIPE_OFF($s0)
+    lbu     $t0, GSU_PIPE_OFF($s0)  /* $t0 = offset from PIPE */
+    seb     $t0, $t0                /* sign-extend 8-bit offset */
+
     lw      $t4, GSU_VSIGN_OFF($s0)
     lw      $t5, GSU_VOVERFLOW_OFF($s0)
     andi    $t4, $t4, 0x8000
@@ -70,7 +71,7 @@
     xor     $t8, $t4, $t6           /* cond = (sign != 0) != (ov != 0) */
     bnez    $t8, 1f
     nop
-    addiu   $s2, $s2, 1             /* not taken: R15++ */
+    addiu   $s2, $s2, 1             /* not taken: R15++ (skip offset byte) */
     j       .Lfx_dispatch_loop
     nop
 1:  addu    $s2, $s2, $t0           /* taken: R15 += SEX8(v) */
@@ -79,13 +80,14 @@
 
 /* 0x07: BGE - Branch on Greater or Equal ((TEST_S != 0) == (TEST_OV != 0)) */
 .Lop_bge:
-    lbu     $t0, GSU_PIPE_OFF($s0)
-    seb     $t0, $t0
-    addiu   $s2, $s2, 1             /* R15++ */
+    addiu   $s2, $s2, 1             /* R15++ (skip opcode, point to offset byte) */
     andi    $t1, $s2, 0xFFFF
     addu    $t2, $s3, $t1
-    lbu     $t7, 0($t2)             /* FETCHPIPE */
+    lbu     $t7, 0($t2)             /* FETCHPIPE: load offset byte */
     sb      $t7, GSU_PIPE_OFF($s0)
+    lbu     $t0, GSU_PIPE_OFF($s0)  /* $t0 = offset from PIPE */
+    seb     $t0, $t0                /* sign-extend 8-bit offset */
+
     lw      $t4, GSU_VSIGN_OFF($s0)
     lw      $t5, GSU_VOVERFLOW_OFF($s0)
     andi    $t4, $t4, 0x8000
@@ -98,7 +100,7 @@
     xor     $t8, $t4, $t6
     beqz    $t8, 1f
     nop
-    addiu   $s2, $s2, 1             /* not taken: R15++ */
+    addiu   $s2, $s2, 1             /* not taken: R15++ (skip offset byte) */
     j       .Lfx_dispatch_loop
     nop
 1:  addu    $s2, $s2, $t0           /* taken: R15 += SEX8(v) */
@@ -107,18 +109,19 @@
 
 /* 0x08: BNE */
 .Lop_bne:
-    lbu     $t0, GSU_PIPE_OFF($s0)
-    seb     $t0, $t0
-    addiu   $s2, $s2, 1             /* R15++ */
+    addiu   $s2, $s2, 1             /* R15++ (skip opcode, point to offset byte) */
     andi    $t1, $s2, 0xFFFF
     addu    $t2, $s3, $t1
-    lbu     $t7, 0($t2)             /* FETCHPIPE */
+    lbu     $t7, 0($t2)             /* FETCHPIPE: load offset byte */
     sb      $t7, GSU_PIPE_OFF($s0)
+    lbu     $t0, GSU_PIPE_OFF($s0)  /* $t0 = offset from PIPE */
+    seb     $t0, $t0                /* sign-extend 8-bit offset */
+
     lw      $t4, GSU_VZERO_OFF($s0)
     andi    $t4, $t4, 0xFFFF
     bnez    $t4, 1f
     nop
-    addiu   $s2, $s2, 1             /* not taken: R15++ */
+    addiu   $s2, $s2, 1             /* not taken: R15++ (skip offset byte) */
     j       .Lfx_dispatch_loop
     nop
 1:  addu    $s2, $s2, $t0           /* taken: R15 += SEX8(v) */
@@ -127,18 +130,19 @@
 
 /* 0x09: BEQ */
 .Lop_beq:
-    lbu     $t0, GSU_PIPE_OFF($s0)
-    seb     $t0, $t0
-    addiu   $s2, $s2, 1             /* R15++ */
+    addiu   $s2, $s2, 1             /* R15++ (skip opcode, point to offset byte) */
     andi    $t1, $s2, 0xFFFF
     addu    $t2, $s3, $t1
-    lbu     $t7, 0($t2)             /* FETCHPIPE */
+    lbu     $t7, 0($t2)             /* FETCHPIPE: load offset byte */
     sb      $t7, GSU_PIPE_OFF($s0)
+    lbu     $t0, GSU_PIPE_OFF($s0)  /* $t0 = offset from PIPE */
+    seb     $t0, $t0                /* sign-extend 8-bit offset */
+
     lw      $t4, GSU_VZERO_OFF($s0)
     andi    $t4, $t4, 0xFFFF
     beqz    $t4, 1f
     nop
-    addiu   $s2, $s2, 1             /* not taken: R15++ */
+    addiu   $s2, $s2, 1             /* not taken: R15++ (skip offset byte) */
     j       .Lfx_dispatch_loop
     nop
 1:  addu    $s2, $s2, $t0           /* taken: R15 += SEX8(v) */
@@ -147,18 +151,19 @@
 
 /* 0x0A: BPL */
 .Lop_bpl:
-    lbu     $t0, GSU_PIPE_OFF($s0)
-    seb     $t0, $t0
-    addiu   $s2, $s2, 1             /* R15++ */
+    addiu   $s2, $s2, 1             /* R15++ (skip opcode, point to offset byte) */
     andi    $t1, $s2, 0xFFFF
     addu    $t2, $s3, $t1
-    lbu     $t7, 0($t2)             /* FETCHPIPE */
+    lbu     $t7, 0($t2)             /* FETCHPIPE: load offset byte */
     sb      $t7, GSU_PIPE_OFF($s0)
+    lbu     $t0, GSU_PIPE_OFF($s0)  /* $t0 = offset from PIPE */
+    seb     $t0, $t0                /* sign-extend 8-bit offset */
+
     lw      $t4, GSU_VSIGN_OFF($s0)
     andi    $t4, $t4, 0x8000
     beqz    $t4, 1f
     nop
-    addiu   $s2, $s2, 1             /* not taken: R15++ */
+    addiu   $s2, $s2, 1             /* not taken: R15++ (skip offset byte) */
     j       .Lfx_dispatch_loop
     nop
 1:  addu    $s2, $s2, $t0           /* taken: R15 += SEX8(v) */
@@ -167,18 +172,19 @@
 
 /* 0x0B: BMI */
 .Lop_bmi:
-    lbu     $t0, GSU_PIPE_OFF($s0)
-    seb     $t0, $t0
-    addiu   $s2, $s2, 1             /* R15++ */
+    addiu   $s2, $s2, 1             /* R15++ (skip opcode, point to offset byte) */
     andi    $t1, $s2, 0xFFFF
     addu    $t2, $s3, $t1
-    lbu     $t7, 0($t2)             /* FETCHPIPE */
+    lbu     $t7, 0($t2)             /* FETCHPIPE: load offset byte */
     sb      $t7, GSU_PIPE_OFF($s0)
+    lbu     $t0, GSU_PIPE_OFF($s0)  /* $t0 = offset from PIPE */
+    seb     $t0, $t0                /* sign-extend 8-bit offset */
+
     lw      $t4, GSU_VSIGN_OFF($s0)
     andi    $t4, $t4, 0x8000
     bnez    $t4, 1f
     nop
-    addiu   $s2, $s2, 1             /* not taken: R15++ */
+    addiu   $s2, $s2, 1             /* not taken: R15++ (skip offset byte) */
     j       .Lfx_dispatch_loop
     nop
 1:  addu    $s2, $s2, $t0           /* taken: R15 += SEX8(v) */
@@ -187,18 +193,19 @@
 
 /* 0x0C: BCC */
 .Lop_bcc:
-    lbu     $t0, GSU_PIPE_OFF($s0)
-    seb     $t0, $t0
-    addiu   $s2, $s2, 1             /* R15++ */
+    addiu   $s2, $s2, 1             /* R15++ (skip opcode, point to offset byte) */
     andi    $t1, $s2, 0xFFFF
     addu    $t2, $s3, $t1
-    lbu     $t7, 0($t2)             /* FETCHPIPE */
+    lbu     $t7, 0($t2)             /* FETCHPIPE: load offset byte */
     sb      $t7, GSU_PIPE_OFF($s0)
+    lbu     $t0, GSU_PIPE_OFF($s0)  /* $t0 = offset from PIPE */
+    seb     $t0, $t0                /* sign-extend 8-bit offset */
+
     lw      $t4, GSU_VCARRY_OFF($s0)
     andi    $t4, $t4, 1
     beqz    $t4, 1f
     nop
-    addiu   $s2, $s2, 1             /* not taken: R15++ */
+    addiu   $s2, $s2, 1             /* not taken: R15++ (skip offset byte) */
     j       .Lfx_dispatch_loop
     nop
 1:  addu    $s2, $s2, $t0           /* taken: R15 += SEX8(v) */
@@ -207,18 +214,19 @@
 
 /* 0x0D: BCS */
 .Lop_bcs:
-    lbu     $t0, GSU_PIPE_OFF($s0)
-    seb     $t0, $t0
-    addiu   $s2, $s2, 1             /* R15++ */
+    addiu   $s2, $s2, 1             /* R15++ (skip opcode, point to offset byte) */
     andi    $t1, $s2, 0xFFFF
     addu    $t2, $s3, $t1
-    lbu     $t7, 0($t2)             /* FETCHPIPE */
+    lbu     $t7, 0($t2)             /* FETCHPIPE: load offset byte */
     sb      $t7, GSU_PIPE_OFF($s0)
+    lbu     $t0, GSU_PIPE_OFF($s0)  /* $t0 = offset from PIPE */
+    seb     $t0, $t0                /* sign-extend 8-bit offset */
+
     lw      $t4, GSU_VCARRY_OFF($s0)
     andi    $t4, $t4, 1
     bnez    $t4, 1f
     nop
-    addiu   $s2, $s2, 1             /* not taken: R15++ */
+    addiu   $s2, $s2, 1             /* not taken: R15++ (skip offset byte) */
     j       .Lfx_dispatch_loop
     nop
 1:  addu    $s2, $s2, $t0           /* taken: R15 += SEX8(v) */
@@ -227,13 +235,14 @@
 
 /* 0x0E: BVC - Branch on Overflow Clear (!TEST_OV) */
 .Lop_bvc:
-    lbu     $t0, GSU_PIPE_OFF($s0)
-    seb     $t0, $t0
-    addiu   $s2, $s2, 1             /* R15++ */
+    addiu   $s2, $s2, 1             /* R15++ (skip opcode, point to offset byte) */
     andi    $t1, $s2, 0xFFFF
     addu    $t2, $s3, $t1
-    lbu     $t7, 0($t2)             /* FETCHPIPE */
+    lbu     $t7, 0($t2)             /* FETCHPIPE: load offset byte */
     sb      $t7, GSU_PIPE_OFF($s0)
+    lbu     $t0, GSU_PIPE_OFF($s0)  /* $t0 = offset from PIPE */
+    seb     $t0, $t0                /* sign-extend 8-bit offset */
+
     lw      $t5, GSU_VOVERFLOW_OFF($s0)
     slti    $t6, $t5, 0x8000
     xori    $t6, $t6, 1             /* overflow high (0 or 1) */
@@ -242,7 +251,7 @@
     or      $t6, $t6, $t7           /* ov != 0 */
     beqz    $t6, 1f                 /* if ov == 0, branch taken! */
     nop
-    addiu   $s2, $s2, 1             /* not taken: R15++ */
+    addiu   $s2, $s2, 1             /* not taken: R15++ (skip offset byte) */
     j       .Lfx_dispatch_loop
     nop
 1:  addu    $s2, $s2, $t0           /* taken: R15 += SEX8(v) */
@@ -251,13 +260,14 @@
 
 /* 0x0F: BVS - Branch on Overflow Set (TEST_OV) */
 .Lop_bvs:
-    lbu     $t0, GSU_PIPE_OFF($s0)
-    seb     $t0, $t0
-    addiu   $s2, $s2, 1             /* R15++ */
+    addiu   $s2, $s2, 1             /* R15++ (skip opcode, point to offset byte) */
     andi    $t1, $s2, 0xFFFF
     addu    $t2, $s3, $t1
-    lbu     $t7, 0($t2)             /* FETCHPIPE */
+    lbu     $t7, 0($t2)             /* FETCHPIPE: load offset byte */
     sb      $t7, GSU_PIPE_OFF($s0)
+    lbu     $t0, GSU_PIPE_OFF($s0)  /* $t0 = offset from PIPE */
+    seb     $t0, $t0                /* sign-extend 8-bit offset */
+
     lw      $t5, GSU_VOVERFLOW_OFF($s0)
     slti    $t6, $t5, 0x8000
     xori    $t6, $t6, 1
@@ -266,7 +276,7 @@
     or      $t6, $t6, $t7
     bnez    $t6, 1f                 /* if ov != 0, branch taken! */
     nop
-    addiu   $s2, $s2, 1             /* not taken: R15++ */
+    addiu   $s2, $s2, 1             /* not taken: R15++ (skip offset byte) */
     j       .Lfx_dispatch_loop
     nop
 1:  addu    $s2, $s2, $t0           /* taken: R15 += SEX8(v) */
