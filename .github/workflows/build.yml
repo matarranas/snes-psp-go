@@ -25,18 +25,19 @@ jobs:
         run: |
           make me V=1 2>&1 | tee build.log
 
-      - name: Upload Build Log on Failure
-        if: failure()
+      - name: Upload Build Log
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: build-failure-log
+          name: build-log
           path: build.log
 
       - name: Prepare Release Package
         run: |
           mkdir -p build_output/snes9xTYL/DATA
           ls -la
-          cp -f EBOOT.PBP build_output/snes9xTYL/ || cp -f *.PBP build_output/snes9xTYL/ || true
+          test -f EBOOT.PBP || { echo "ERROR: EBOOT.PBP was not created!"; exit 1; }
+          cp -f EBOOT.PBP build_output/snes9xTYL/
           cp -f mediaengine.prx build_output/snes9xTYL/ || true
           cp -f homehook.prx build_output/snes9xTYL/ || true
           cp -f data/snesadvance.dat build_output/snes9xTYL/DATA/ || true
