@@ -377,6 +377,13 @@ static inline void fx_readRegisterSpaceForUse()
 
 void fx_computeScreenPointers ()
 {
+    if (GSU.vMode == GSU.vPrevMode &&
+        GSU.vPrevScreenHeight == GSU.vScreenHeight &&
+        !GSU.vSCBRDirty)
+    {
+        return;
+    }
+
     int32_t i, j, condition, mask, result;
 	uint32_t apvIncrement, vMode, xIncrement;
 	GSU.vSCBRDirty = FALSE;
@@ -614,25 +621,153 @@ void S9xSuperFXExec ()
 	GSU.vCounter = nInstructions;
 	READR14;
 
-	/* Run 100% C++ reference core (diagnostic: bypass MIPS) */
+	/* Fast-path Super FX execution loop */
 	while (TF(G) && GSU.vCounter-- > 0)
 	{
-		uint32	vOpcode = (uint32) PIPE;
+		uint32 vOpcode = (uint32) PIPE;
 		FETCHPIPE;
+
+		/* Inlined fast path for high-frequency opcodes when ALT1 and ALT2 flags are clear */
+		if (!(GSU.vStatusReg & (FLG_ALT1 | FLG_ALT2)))
+		{
+			/* WITH Rn (0x20 - 0x2F): SF(B); SREG = &Rn; DREG = &Rn; R15++ */
+			if ((vOpcode & 0xF0) == 0x20)
+			{
+				uint32 r = vOpcode & 0x0F;
+				SF(B);
+				GSU.pvSreg = &GSU.avReg[r];
+				GSU.pvDreg = &GSU.avReg[r];
+				R15++;
+				continue;
+			}
+			/* TO Rn (0x10 - 0x1F) for r <= 13 (r=14 and r=15 handled via table for special checks) */
+			if ((vOpcode & 0xF0) == 0x10 && (vOpcode & 0x0F) < 14)
+			{
+				uint32 r = vOpcode & 0x0F;
+				if (TF(B)) {
+					GSU.avReg[r] = SREG;
+					CLRFLAGS;
+				} else {
+					GSU.pvDreg = &GSU.avReg[r];
+				}
+				R15++;
+				continue;
+			}
+			/* FROM Rn (0xB0 - 0xBF) when B is clear: SREG = &Rn; R15++ */
+			if ((vOpcode & 0xF0) == 0xB0 && !TF(B))
+			{
+				uint32 r = vOpcode & 0x0F;
+				GSU.pvSreg = &GSU.avReg[r];
+				R15++;
+				continue;
+			}
+			/* NOP (0x01) */
+			if (vOpcode == 0x01)
+			{
+				CLRFLAGS;
+				R15++;
+				continue;
+			}
+			/* CACHE (0x02) */
+			if (vOpcode == 0x02)
+			{
+				GSU.vCacheBaseReg = R15 & 0xFFFE;
+				GSU.bCacheActive = TRUE;
+				CLRFLAGS;
+				R15++;
+				continue;
+			}
+			/* BRA (0x05) */
+			if (vOpcode == 0x05)
+			{
+				uint8 v = PIPE;
+				R15++;
+				FETCHPIPE;
+				R15 += (int8)v;
+				continue;
+			}
+			/* BNE (0x08) */
+			if (vOpcode == 0x08)
+			{
+				uint8 v = PIPE;
+				R15++;
+				FETCHPIPE;
+				if (!TF(Z)) R15 += (int8)v;
+				continue;
+			}
+			/* BEQ (0x09) */
+			if (vOpcode == 0x09)
+			{
+				uint8 v = PIPE;
+				R15++;
+				FETCHPIPE;
+				if (TF(Z)) R15 += (int8)v;
+				continue;
+			}
+			/* LOOP (0x3C) */
+			if (vOpcode == 0x3C)
+			{
+				GSU.avReg[12]--;
+				GSU.vSign = GSU.avReg[12];
+				GSU.vZero = GSU.avReg[12];
+				if (GSU.avReg[12] != 0) {
+					R15 = GSU.avReg[13];
+					FETCHPIPE;
+				} else {
+					R15++;
+				}
+				CLRFLAGS;
+				continue;
+			}
+			/* ALT1 (0x3D) */
+			if (vOpcode == 0x3D)
+			{
+				SF(ALT1);
+				R15++;
+				continue;
+			}
+			/* ALT2 (0x3E) */
+			if (vOpcode == 0x3E)
+			{
+				SF(ALT2);
+				R15++;
+				continue;
+			}
+			/* ALT3 (0x3F) */
+			if (vOpcode == 0x3F)
+			{
+				SF(ALT1);
+				SF(ALT2);
+				R15++;
+				continue;
+			}
+			/* INC Rn (0xD0 - 0xDF) */
+			if ((vOpcode & 0xF0) == 0xD0)
+			{
+				uint32 r = vOpcode & 0x0F;
+				GSU.avReg[r]++;
+				GSU.vSign = GSU.avReg[r];
+				GSU.vZero = GSU.avReg[r];
+				CLRFLAGS;
+				R15++;
+				continue;
+			}
+			/* DEC Rn (0xC0 - 0xCF) */
+			if ((vOpcode & 0xF0) == 0xC0)
+			{
+				uint32 r = vOpcode & 0x0F;
+				GSU.avReg[r]--;
+				GSU.vSign = GSU.avReg[r];
+				GSU.vZero = GSU.avReg[r];
+				CLRFLAGS;
+				R15++;
+				continue;
+			}
+		}
+
+		/* Full opcode table dispatch for all other opcodes / ALT modes */
 		(*fx_ppfOpcodeTable[(GSU.vStatusReg & 0x300) | vOpcode])();
 	}
-
-	/* MIPS core disabled for diagnostic:
-	mips_sfx_run(nInstructions);
-
-	Fallback / finish any remaining cycles if needed
-	while (TF(G) && GSU.vCounter-- > 0)
-	{
-		uint32	vOpcode = (uint32) PIPE;
-		FETCHPIPE;
-		(*fx_ppfOpcodeTable[(GSU.vStatusReg & 0x300) | vOpcode])();
-	}
-	*/
 
     /* Store GSU registers */
     //fx_writeRegisterSpaceAfterCheck();

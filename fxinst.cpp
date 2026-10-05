@@ -457,13 +457,11 @@ static inline void fx_plot_2bit()
     if( !(GSU.vPlotOptionReg & 0x01) && !(c & 0xf)) return;
     a = GSU.apvScreen[y >> 3] + GSU.x[x >> 3] + ((y & 7) << 1);
     v = 128 >> (x&7);
-    uint8 not_v = ~v;
 
-    uint16 *p0 = (uint16*)a;
-    uint16 mask0 = (c & 0x01 ? v : 0) | (c & 0x02 ? (v << 8) : 0);
-    uint16 clear_mask = not_v | (not_v << 8);
-
-    *p0 = (*p0 & clear_mask) | mask0;
+    if(c & 0x01) a[0] |= v;
+    else a[0] &= ~v;
+    if(c & 0x02) a[1] |= v;
+    else a[1] &= ~v;
 }
 
 /* 2c(ALT1) - rpix - read color of the pixel with R1,R2 as x,y */
@@ -513,17 +511,15 @@ static inline void fx_plot_4bit()
 
     a = GSU.apvScreen[y >> 3] + GSU.x[x >> 3] + ((y & 7) << 1);
     v = 128 >> (x&7);
-    uint8 not_v = ~v;
 
-    // Actualizacion optimizada por pares de bitplanes (16 bits)
-    uint16 *p0 = (uint16*)a;
-    uint16 *p1 = (uint16*)(a + 0x10);
-    uint16 mask0 = (c & 0x01 ? v : 0) | (c & 0x02 ? (v << 8) : 0);
-    uint16 mask1 = (c & 0x04 ? v : 0) | (c & 0x08 ? (v << 8) : 0);
-    uint16 clear_mask = not_v | (not_v << 8);
-
-    *p0 = (*p0 & clear_mask) | mask0;
-    *p1 = (*p1 & clear_mask) | mask1;
+    if(c & 0x01) a[0x00] |= v;
+    else a[0x00] &= ~v;
+    if(c & 0x02) a[0x01] |= v;
+    else a[0x01] &= ~v;
+    if(c & 0x04) a[0x10] |= v;
+    else a[0x10] &= ~v;
+    if(c & 0x08) a[0x11] |= v;
+    else a[0x11] &= ~v;
 }
 
 /* 4c(ALT1) - rpix - read color of the pixel with R1,R2 as x,y */
@@ -577,24 +573,23 @@ static inline void fx_plot_8bit()
 
     a = GSU.apvScreen[y >> 3] + GSU.x[x >> 3] + ((y & 7) << 1);
     v = 128 >> (x&7);
-    uint8 not_v = ~v;
 
-    uint16 *p0 = (uint16*)a;
-    uint16 *p1 = (uint16*)(a + 0x10);
-    uint16 *p2 = (uint16*)(a + 0x20);
-    uint16 *p3 = (uint16*)(a + 0x30);
-
-    uint16 clear_mask = not_v | (not_v << 8);
-
-    uint16 mask0 = (c & 0x01 ? v : 0) | (c & 0x02 ? (v << 8) : 0);
-    uint16 mask1 = (c & 0x04 ? v : 0) | (c & 0x08 ? (v << 8) : 0);
-    uint16 mask2 = (c & 0x10 ? v : 0) | (c & 0x20 ? (v << 8) : 0);
-    uint16 mask3 = (c & 0x40 ? v : 0) | (c & 0x80 ? (v << 8) : 0);
-
-    *p0 = (*p0 & clear_mask) | mask0;
-    *p1 = (*p1 & clear_mask) | mask1;
-    *p2 = (*p2 & clear_mask) | mask2;
-    *p3 = (*p3 & clear_mask) | mask3;
+    if(c & 0x01) a[0x00] |= v;
+    else a[0x00] &= ~v;
+    if(c & 0x02) a[0x01] |= v;
+    else a[0x01] &= ~v;
+    if(c & 0x04) a[0x10] |= v;
+    else a[0x10] &= ~v;
+    if(c & 0x08) a[0x11] |= v;
+    else a[0x11] &= ~v;
+    if(c & 0x10) a[0x20] |= v;
+    else a[0x20] &= ~v;
+    if(c & 0x20) a[0x21] |= v;
+    else a[0x21] &= ~v;
+    if(c & 0x40) a[0x30] |= v;
+    else a[0x30] &= ~v;
+    if(c & 0x80) a[0x31] |= v;
+    else a[0x31] &= ~v;
 }
 
 /* 4c(ALT1) - rpix - read color of the pixel with R1,R2 as x,y */
