@@ -146,7 +146,7 @@
 /* 0x3C: LOOP */
 .Lop_loop:
     lw      $t0, GSU_R12_OFF($s0)
-    subiu   $t0, $t0, 1
+    addiu   $t0, $t0, -1
     andi    $t0, $t0, 0xFFFF
     sw      $t0, GSU_R12_OFF($s0)
     sw      $t0, GSU_VSIGN_OFF($s0)

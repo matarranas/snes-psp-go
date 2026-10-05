@@ -40,7 +40,7 @@ mips_sfx_run:
     /* Check if G flag is set in vStatusReg (bit 5) and instructions counter > 0 */
     andi    $t0, $s6, 0x0020
     beqz    $t0, .Lfx_exit_loop
-    subiu   $s1, $s1, 1             /* Decrement instruction counter in delay slot */
+    addiu   $s1, $s1, -1            /* Decrement instruction counter in delay slot */
 
     bltz    $s1, .Lfx_exit_loop
     nop
