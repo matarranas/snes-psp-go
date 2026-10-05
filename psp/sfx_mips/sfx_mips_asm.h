@@ -42,6 +42,7 @@
 
 #define GSU_ROMBUF_OFF    108
 #define GSU_PIPE_OFF      109
+#define GSU_PIPEADR_OFF   112
 
 #define GSU_PVREGISTERS_OFF 152
 

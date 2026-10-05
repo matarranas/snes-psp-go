@@ -54,6 +54,14 @@ mips_sfx_run:
     lbu     $t7, 0($t2)             /* $t7 = next byte */
     sb      $t7, GSU_PIPE_OFF($s0)  /* GSU.vPipe = next byte */
 
+    /* Update vPipeAdr = (vPrgBankReg << 16) | R15 */
+    sll     $t8, $s6, 16            /* vPrgBankReg is in bits 8-9 of vStatusReg, but we need the actual value */
+    /* vPrgBankReg is stored at GSU_PRGBANK_OFF (byte) */
+    lbu     $t8, GSU_PRGBANK_OFF($s0)
+    sll     $t8, $t8, 16
+    or      $t8, $t8, $s2
+    sw      $t8, GSU_PIPEADR_OFF($s0)
+
     /* Save pvSreg/pvDreg to GSU struct at instruction boundary for C++ fallback sync */
     sw      $s4, GSU_SREG_OFF($s0)
     sw      $s5, GSU_DREG_OFF($s0)
@@ -204,11 +212,19 @@ mips_sfx_run:
 
 .Lop_default_fallback:
     /* Opcode not handled natively in assembly:
-     * Restore GSU.vPipe to current opcode ($t3) so C++ fallback table can execute it cleanly!
+     * MIPS's FETCHPIPE (at loop top) already loaded PRGBANK(R15) into PIPE.
+     * At this point R15 points to the fallback instruction (not yet executed).
+     * So PIPE = current fallback instruction. DO NOT restore $t3 (that was PREVIOUS instruction).
+     * Update vPipeAdr = (vPrgBankReg << 16) | R15 for C++ fallback.
      * Adjust vCounter: MIPS decremented for this instruction but didn't execute it;
      * C++ fallback will execute it, so add 1 back.
      */
-    sb      $t3, GSU_PIPE_OFF($s0)
+    /* Update vPipeAdr = (vPrgBankReg << 16) | R15 */
+    lbu     $t8, GSU_PRGBANK_OFF($s0)
+    sll     $t8, $t8, 16
+    or      $t8, $t8, $s2
+    sw      $t8, GSU_PIPEADR_OFF($s0)
+
     addiu   $s1, $s1, 1                 /* Compensate for MIPS pre-decrement of fallback instruction */
     /* Save updated status register and exit core loop to let C++ fallback run */
     j       .Lfx_exit_loop
