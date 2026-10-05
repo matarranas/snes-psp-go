@@ -170,12 +170,13 @@ mips_sfx_run:
 #include "fx_mips_rom.inc"
 
 .Lop_default_fallback:
-    /* Default fallback: advance R15, clear flags, continue to avoid infinite loops */
-    addiu   $s2, $s2, 1
-    andi    $s6, $s6, 0xEFFF
-    addu    $s4, $s0, $zero
-    j       .Lfx_dispatch_loop
-    addu    $s5, $s0, $zero
+    /* Opcode not handled natively in assembly:
+     * Restore GSU.vPipe to current opcode ($t3) so C++ fallback table can execute it cleanly!
+     */
+    sb      $t3, GSU_PIPE_OFF($s0)
+    /* Save updated status register and exit core loop to let C++ fallback run */
+    j       .Lfx_exit_loop
+    nop
 
 .Lfx_exit_loop:
     /* Epilogue: Save updated registers back to struct FxRegs_s GSU */

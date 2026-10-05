@@ -19,13 +19,15 @@ for alt in range(4):
     table[base + 0x06] = ".Lop_blt"
     # 0x07: BGE
     table[base + 0x07] = ".Lop_bge"
-    # Branches 0x08-0x0D
+    # Branches 0x08-0x0F
     table[base + 0x08] = ".Lop_bne"
     table[base + 0x09] = ".Lop_beq"
     table[base + 0x0A] = ".Lop_bpl"
     table[base + 0x0B] = ".Lop_bmi"
     table[base + 0x0C] = ".Lop_bcc"
     table[base + 0x0D] = ".Lop_bcs"
+    table[base + 0x0E] = ".Lop_bvc"
+    table[base + 0x0F] = ".Lop_bvs"
     # 0x3C: LOOP
     table[base + 0x3C] = ".Lop_loop"
     # 0x3D: ALT1

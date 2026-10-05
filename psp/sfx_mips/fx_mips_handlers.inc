@@ -191,6 +191,46 @@
     j       .Lfx_dispatch_loop
     nop
 
+/* 0x0E: BVC - Branch on Overflow Clear (!TEST_OV) */
+.Lop_bvc:
+    lw      $t5, GSU_VOVERFLOW_OFF($s0)
+    andi    $t1, $s2, 0xFFFF
+    addu    $t2, $s3, $t1
+    lb      $t0, 0($t2)
+    slti    $t6, $t5, 0x8000
+    xori    $t6, $t6, 1          /* overflow high (0 or 1) */
+    li      $t7, -0x8000
+    slt     $t7, $t5, $t7        /* overflow low (0 or 1) */
+    or      $t6, $t6, $t7        /* ov != 0 */
+    beqz    $t6, 1f              /* if ov == 0, branch taken! */
+    addiu   $s2, $s2, 1
+    addiu   $s2, $s2, 1
+    j       .Lfx_dispatch_loop
+    nop
+1:  addu    $s2, $s2, $t0
+    j       .Lfx_dispatch_loop
+    nop
+
+/* 0x0F: BVS - Branch on Overflow Set (TEST_OV) */
+.Lop_bvs:
+    lw      $t5, GSU_VOVERFLOW_OFF($s0)
+    andi    $t1, $s2, 0xFFFF
+    addu    $t2, $s3, $t1
+    lb      $t0, 0($t2)
+    slti    $t6, $t5, 0x8000
+    xori    $t6, $t6, 1
+    li      $t7, -0x8000
+    slt     $t7, $t5, $t7
+    or      $t6, $t6, $t7
+    bnez    $t6, 1f              /* if ov != 0, branch taken! */
+    addiu   $s2, $s2, 1
+    addiu   $s2, $s2, 1
+    j       .Lfx_dispatch_loop
+    nop
+1:  addu    $s2, $s2, $t0
+    j       .Lfx_dispatch_loop
+    nop
+
 /* 0x3C: LOOP */
 .Lop_loop:
     lw      $t0, GSU_R12_OFF($s0)

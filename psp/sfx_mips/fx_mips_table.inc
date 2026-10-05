@@ -17,8 +17,8 @@ fx_mips_jump_table:
     .word .Lop_bmi /* 0x00B (ALT0: 0x0B) */
     .word .Lop_bcc /* 0x00C (ALT0: 0x0C) */
     .word .Lop_bcs /* 0x00D (ALT0: 0x0D) */
-    .word .Lop_default_fallback /* 0x00E (ALT0: 0x0E) */
-    .word .Lop_default_fallback /* 0x00F (ALT0: 0x0F) */
+    .word .Lop_bvc /* 0x00E (ALT0: 0x0E) */
+    .word .Lop_bvs /* 0x00F (ALT0: 0x0F) */
     .word .Lop_to_rn /* 0x010 (ALT0: 0x10) */
     .word .Lop_to_rn /* 0x011 (ALT0: 0x11) */
     .word .Lop_to_rn /* 0x012 (ALT0: 0x12) */
@@ -273,8 +273,8 @@ fx_mips_jump_table:
     .word .Lop_bmi /* 0x10B (ALT1: 0x0B) */
     .word .Lop_bcc /* 0x10C (ALT1: 0x0C) */
     .word .Lop_bcs /* 0x10D (ALT1: 0x0D) */
-    .word .Lop_default_fallback /* 0x10E (ALT1: 0x0E) */
-    .word .Lop_default_fallback /* 0x10F (ALT1: 0x0F) */
+    .word .Lop_bvc /* 0x10E (ALT1: 0x0E) */
+    .word .Lop_bvs /* 0x10F (ALT1: 0x0F) */
     .word .Lop_to_rn /* 0x110 (ALT1: 0x10) */
     .word .Lop_to_rn /* 0x111 (ALT1: 0x11) */
     .word .Lop_to_rn /* 0x112 (ALT1: 0x12) */
@@ -529,8 +529,8 @@ fx_mips_jump_table:
     .word .Lop_bmi /* 0x20B (ALT2: 0x0B) */
     .word .Lop_bcc /* 0x20C (ALT2: 0x0C) */
     .word .Lop_bcs /* 0x20D (ALT2: 0x0D) */
-    .word .Lop_default_fallback /* 0x20E (ALT2: 0x0E) */
-    .word .Lop_default_fallback /* 0x20F (ALT2: 0x0F) */
+    .word .Lop_bvc /* 0x20E (ALT2: 0x0E) */
+    .word .Lop_bvs /* 0x20F (ALT2: 0x0F) */
     .word .Lop_to_rn /* 0x210 (ALT2: 0x10) */
     .word .Lop_to_rn /* 0x211 (ALT2: 0x11) */
     .word .Lop_to_rn /* 0x212 (ALT2: 0x12) */
@@ -785,8 +785,8 @@ fx_mips_jump_table:
     .word .Lop_bmi /* 0x30B (ALT3: 0x0B) */
     .word .Lop_bcc /* 0x30C (ALT3: 0x0C) */
     .word .Lop_bcs /* 0x30D (ALT3: 0x0D) */
-    .word .Lop_default_fallback /* 0x30E (ALT3: 0x0E) */
-    .word .Lop_default_fallback /* 0x30F (ALT3: 0x0F) */
+    .word .Lop_bvc /* 0x30E (ALT3: 0x0E) */
+    .word .Lop_bvs /* 0x30F (ALT3: 0x0F) */
     .word .Lop_to_rn /* 0x310 (ALT3: 0x10) */
     .word .Lop_to_rn /* 0x311 (ALT3: 0x11) */
     .word .Lop_to_rn /* 0x312 (ALT3: 0x12) */
