@@ -188,10 +188,10 @@
     lw      $s2, 0($s4)
     andi    $s2, $s2, 0xFFFF
 
-    /* Invalidate cache: bCacheActive = FALSE; then fx_cache() logic; then R15-- */
+    /* Invalidate cache: bCacheActive = FALSE; then fx_cache() logic (including R15++); then R15-- */
     sb      $zero, GSU_BCACHEACTIVE_OFF($s0)   /* bCacheActive = FALSE */
 
-    /* fx_cache() inline: if (vCacheBaseReg != c || !bCacheActive) { invalidate } */
+    /* fx_cache() inline: if (vCacheBaseReg != c || !bCacheActive) { invalidate }; R15++ */
     andi    $t4, $s2, 0xFFF0            /* c = R15 & 0xFFF0 */
     lw      $t5, GSU_CACHEBASE_OFF($s0)
     lbu     $t6, GSU_BCACHEACTIVE_OFF($s0)
@@ -205,9 +205,10 @@
     li      $t7, 1
     sb      $t7, GSU_BCACHEACTIVE_OFF($s0)   /* bCacheActive = TRUE */
 2:
+    addiu   $s2, $s2, 1                 /* fx_cache does R15++ */
 
-    /* fx_cache does R15++; compensate with R15-- */
-    addiu   $s2, $s2, -1                /* R15-- */
+    /* LJMP compensates: R15-- */
+    addiu   $s2, $s2, -1                /* R15-- (net zero change from fx_cache) */
 
     /* CLRFLAGS */
     andi    $s6, $s6, 0xEFFF

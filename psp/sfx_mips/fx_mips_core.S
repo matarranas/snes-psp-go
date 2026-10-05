@@ -54,6 +54,10 @@ mips_sfx_run:
     lbu     $t7, 0($t2)             /* $t7 = next byte */
     sb      $t7, GSU_PIPE_OFF($s0)  /* GSU.vPipe = next byte */
 
+    /* Save pvSreg/pvDreg to GSU struct at instruction boundary for C++ fallback sync */
+    sw      $s4, GSU_SREG_OFF($s0)
+    sw      $s5, GSU_DREG_OFF($s0)
+
     /* Calculate dispatch address in 1024-entry jump table:
      * Index = (vStatusReg & 0x300) | opcode
      */
@@ -201,8 +205,11 @@ mips_sfx_run:
 .Lop_default_fallback:
     /* Opcode not handled natively in assembly:
      * Restore GSU.vPipe to current opcode ($t3) so C++ fallback table can execute it cleanly!
+     * Adjust vCounter: MIPS decremented for this instruction but didn't execute it;
+     * C++ fallback will execute it, so add 1 back.
      */
     sb      $t3, GSU_PIPE_OFF($s0)
+    addiu   $s1, $s1, 1                 /* Compensate for MIPS pre-decrement of fallback instruction */
     /* Save updated status register and exit core loop to let C++ fallback run */
     j       .Lfx_exit_loop
     nop
