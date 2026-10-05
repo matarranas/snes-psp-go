@@ -69,20 +69,7 @@ ZLIBOBJ = zlib/adler32.o zlib/compress.o zlib/crc32.o zlib/gzio.o \
 
 DANZOBJ = danzeff/danzeff.o
 
-SFX_MIPS_OBJ = psp/sfx_mips/fx_mips_core.o \
-	psp/sfx_mips/fx_adc.o psp/sfx_mips/fx_add.o psp/sfx_mips/fx_alt1.o \
-	psp/sfx_mips/fx_alt2.o psp/sfx_mips/fx_alt3.o psp/sfx_mips/fx_and.o \
-	psp/sfx_mips/fx_asr.o psp/sfx_mips/fx_bcc.o psp/sfx_mips/fx_bcs.o \
-	psp/sfx_mips/fx_beq.o psp/sfx_mips/fx_bic.o psp/sfx_mips/fx_bmi.o \
-	psp/sfx_mips/fx_bne.o psp/sfx_mips/fx_bpl.o psp/sfx_mips/fx_bra.o \
-	psp/sfx_mips/fx_cache.o psp/sfx_mips/fx_cmp.o psp/sfx_mips/fx_dec.o \
-	psp/sfx_mips/fx_fmult.o psp/sfx_mips/fx_hib.o psp/sfx_mips/fx_inc.o \
-	psp/sfx_mips/fx_lob.o psp/sfx_mips/fx_loop.o psp/sfx_mips/fx_lsr.o \
-	psp/sfx_mips/fx_merge.o psp/sfx_mips/fx_mult.o psp/sfx_mips/fx_nop.o \
-	psp/sfx_mips/fx_not.o psp/sfx_mips/fx_or.o psp/sfx_mips/fx_rol.o \
-	psp/sfx_mips/fx_ror.o psp/sfx_mips/fx_sbc.o psp/sfx_mips/fx_sex.o \
-	psp/sfx_mips/fx_stop.o psp/sfx_mips/fx_sub.o psp/sfx_mips/fx_swap.o \
-	psp/sfx_mips/fx_umult.o psp/sfx_mips/fx_xor.o
+SFX_MIPS_OBJ = psp/sfx_mips/fx_mips_core.o
 
 OBJS = $(PLATFORMOBJ) $(PSP_OBJECTS) $(SPCOBJ) $(DANZOBJ) $(SFX_MIPS_OBJ)
 
