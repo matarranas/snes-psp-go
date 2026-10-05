@@ -1930,19 +1930,25 @@ static void GeCallback(int id, void *arg)
 			buf[0] = ((fps_val / 100)%10) + '0';
 			buf[1] = ((fps_val / 10)%10) + '0';
 			buf[2] = (fps_val % 10) + '0';
-			buf[3] = 'F';
-			buf[4] = 'P';
-			buf[5] = 'S';
-			buf[6] = '\0';
-			pgFillBox((CMAX_X - 7) * 8 - 2, 0, 479, 17, 0x8000); // Opaque black background box
-			pgPrintBG( CMAX_X - 7, 0, 0xffff, buf );
+			buf[3] = ' ';
+			buf[4] = 'F';
+			buf[5] = 'P';
+			buf[6] = 'S';
+			buf[7] = '\0';
+			pgFillBox(0, 0, 72, 18, 0x8000); // Fondo negro en esquina superior izquierda
+			pgPrintBG(1, 0, 0x03E0, buf);    // Verde brillante
 		}
 		if (real_fps_val >= 0) {
 			buf[0] = ((real_fps_val / 100)%10) + '0';
 			buf[1] = ((real_fps_val / 10)%10) + '0';
 			buf[2] = (real_fps_val % 10) + '0';
-			buf[3] = '\0';
-			pgPrintBG( CMAX_X - 7, 1, 0xffff, buf );
+			buf[3] = ' ';
+			buf[4] = 'R';
+			buf[5] = 'E';
+			buf[6] = 'A';
+			buf[7] = 'L';
+			buf[8] = '\0';
+			pgPrintBG(1, 1, 0x7FFF, buf);    // Blanco
 		}
 	}
 	//MyCounter_drawCount();
@@ -3719,6 +3725,7 @@ static int init_snes_rom() {
 	else S9xSetSoundMute( true );
 
 	in_emu=1;
+	os9x_showfps=1;
 
 	s_iFrame = 0;
 	s_TotalFrame = 0;
