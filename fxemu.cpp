@@ -614,17 +614,26 @@ void S9xSuperFXExec ()
 	GSU.vCounter = nInstructions;
 	READR14;
 
-	/* Run native MIPS monolithic core for Super FX */
-	mips_sfx_run(nInstructions);
-
-	/* Fallback / finish any remaining cycles if needed */
+	/* Run 100% C++ reference core (diagnostic: bypass MIPS) */
 	while (TF(G) && GSU.vCounter-- > 0)
 	{
 		uint32	vOpcode = (uint32) PIPE;
 		FETCHPIPE;
 		(*fx_ppfOpcodeTable[(GSU.vStatusReg & 0x300) | vOpcode])();
 	}
-	
+
+	/* MIPS core disabled for diagnostic:
+	mips_sfx_run(nInstructions);
+
+	Fallback / finish any remaining cycles if needed
+	while (TF(G) && GSU.vCounter-- > 0)
+	{
+		uint32	vOpcode = (uint32) PIPE;
+		FETCHPIPE;
+		(*fx_ppfOpcodeTable[(GSU.vStatusReg & 0x300) | vOpcode])();
+	}
+	*/
+
     /* Store GSU registers */
     //fx_writeRegisterSpaceAfterCheck();
 	GSU.pvRegisters[30] = (uint8_t) R15;
