@@ -23,25 +23,21 @@ jobs:
 
       - name: Build Snes9xTYL ME (Media Engine Optimized)
         run: |
-          make me V=1 2>&1 | tee build.log
-
-      - name: Upload Build Log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-log
-          path: build.log
+          make me
+          echo "=== Files after make me ==="
+          ls -la
 
       - name: Prepare Release Package
         run: |
           mkdir -p build_output/snes9xTYL/DATA
-          echo "=== Files in workspace ==="
           ls -la
           # If EBOOT.PBP was not created, build it from TARGET or snes9xTYL.prx
           if [ ! -f EBOOT.PBP ]; then
-            echo "Packaging EBOOT.PBP manually..."
+            echo "Checking for prx or elf files..."
+            ls -la *.prx *.elf || true
             PRX_FILE=$(ls *.prx 2>/dev/null | grep -v mediaengine | grep -v homehook | head -n 1)
             if [ -n "$PRX_FILE" ]; then
+              mksfo "$EMUNAME_VERSION" PARAM.SFO || true
               pack-pbp EBOOT.PBP PARAM.SFO data/icon0.png NULL NULL NULL NULL "$PRX_FILE" NULL || true
             fi
           fi
