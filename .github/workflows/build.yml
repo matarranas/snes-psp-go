@@ -35,7 +35,10 @@ jobs:
       - name: Prepare Release Package
         run: |
           mkdir -p build_output/snes9xTYL/DATA
-          ls -la
+          echo "=== PBP and ELF files generated ==="
+          ls -la *.PBP *.elf *.prx || true
+          echo "=== Last 50 lines of build.log ==="
+          tail -n 50 build.log || true
           test -f EBOOT.PBP || { echo "ERROR: EBOOT.PBP was not created!"; exit 1; }
           cp -f EBOOT.PBP build_output/snes9xTYL/
           cp -f mediaengine.prx build_output/snes9xTYL/ || true
