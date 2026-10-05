@@ -7,7 +7,7 @@ adhoc: makefile_multi
 mehome: makefile_multi
 	$(MAKE) -f $< ME_ACTIVE=1 HOME_HOOK_ON=1
 me: makefile_multi
-	$(MAKE) -f $< ME_ACTIVE=1
+	$(MAKE) -f $< ME_ACTIVE=1 EBOOT.PBP
 mehomeadhoc: makefile_multi
 	$(MAKE) -f $< ME_ACTIVE=1 HOME_HOOK_ON=1 USE_ADHOC=1
 	
