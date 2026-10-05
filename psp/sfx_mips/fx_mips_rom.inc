@@ -145,3 +145,66 @@
     addu    $s4, $s0, $zero
     j       .Lfx_dispatch_loop
     addu    $s5, $s0, $zero
+
+/* =========================================================================
+ * JMP Rn (0x98 - 0x9D, ALT0): R15 = GSU.avReg[n]; CLRFLAGS;
+ * ========================================================================= */
+.Lop_jmp:
+    andi    $t0, $t3, 0x0F              /* n = opcode & 0x0F */
+    sll     $t0, $t0, 2
+    addu    $t0, $s0, $t0               /* &GSU.avReg[n] */
+    lw      $s2, 0($t0)                 /* R15 = GSU.avReg[n] */
+    andi    $s2, $s2, 0xFFFF
+
+    /* Fetch opcode at target into GSU.vPipe */
+    addu    $t2, $s3, $s2
+    lbu     $t7, 0($t2)
+    sb      $t7, GSU_PIPE_OFF($s0)
+
+    andi    $s6, $s6, 0xEFFF            /* CLRFLAGS */
+    addu    $s4, $s0, $zero
+    j       .Lfx_dispatch_loop
+    addu    $s5, $s0, $zero
+
+/* =========================================================================
+ * LJMP Rn (0x98 - 0x9D, ALT1):
+ * GSU.vPrgBankReg = GSU.avReg[reg] & 0x7f;
+ * GSU.pvPrgBank = GSU.apvRomBank[GSU.vPrgBankReg];
+ * R15 = SREG;
+ * GSU.bCacheActive = FALSE; fx_cache(); R15--;
+ * ========================================================================= */
+.Lop_ljmp:
+    andi    $t0, $t3, 0x0F
+    sll     $t0, $t0, 2
+    addu    $t0, $s0, $t0               /* &GSU.avReg[n] */
+    lw      $t1, 0($t0)
+    andi    $t1, $t1, 0x7F              /* vPrgBankReg = Rn & 0x7f */
+    sw      $t1, GSU_PRGBANK_OFF($s0)
+
+    /* pvPrgBank = apvRomBank[vPrgBankReg] */
+    sll     $t2, $t1, 2
+    addiu   $t3, $s0, GSU_APVROMBANK_OFF
+    addu    $t3, $t3, $t2
+    lw      $s3, 0($t3)                 /* $s3 = pvPrgBank */
+    sw      $s3, GSU_PBR_PTR($s0)
+
+    /* R15 = SREG */
+    lw      $s2, 0($s4)
+    andi    $s2, $s2, 0xFFFF
+
+    /* Invalidate cache and update base */
+    andi    $t4, $s2, 0xFFF0            /* c = R15 & 0xFFF0 */
+    sw      $zero, GSU_CACHEFLAG_OFF($s0)
+    sw      $t4, GSU_CACHEBASE_OFF($s0)
+    li      $t5, 1
+    sb      $t5, GSU_BCACHEACTIVE_OFF($s0)
+
+    /* Fetch opcode from new program bank at R15 into pipe */
+    addu    $t6, $s3, $s2
+    lbu     $t7, 0($t6)
+    sb      $t7, GSU_PIPE_OFF($s0)
+
+    andi    $s6, $s6, 0xEFFF            /* CLRFLAGS */
+    addu    $s4, $s0, $zero
+    j       .Lfx_dispatch_loop
+    addu    $s5, $s0, $zero

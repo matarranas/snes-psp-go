@@ -48,6 +48,8 @@
 #define GSU_RAMBANK_PTR   464
 #define GSU_ROMBANK_PTR   468
 #define GSU_PBR_PTR       472
+#define GSU_APVROMBANK_OFF 488
+#define GSU_BCACHEACTIVE_OFF 1512
 #define GSU_VCOUNT_OFF    2036
 
 #endif /* _SFX_MIPS_ASM_H_ */

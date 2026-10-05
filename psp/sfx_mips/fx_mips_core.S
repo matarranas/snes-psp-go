@@ -70,6 +70,35 @@ mips_sfx_run:
  * Opcode Handlers (Base Group)
  * ========================================================================= */
 
+.Lop_cache:
+    /* CACHE (Opcode 0x02):
+     * uint32 c = R15 & 0xfff0;
+     * if(GSU.vCacheBaseReg != c || !GSU.bCacheActive) {
+     *     GSU.vCacheFlags = 0; GSU.vCacheBaseReg = c; GSU.bCacheActive = TRUE;
+     * }
+     * R15++; CLRFLAGS;
+     */
+    andi    $t0, $s2, 0xFFF0        /* c = R15 & 0xFFF0 */
+    lw      $t1, GSU_CACHEBASE_OFF($s0)
+    lbu     $t2, GSU_BCACHEACTIVE_OFF($s0)
+    bne     $t0, $t1, 1f            /* if c != vCacheBaseReg, update */
+    nop
+    beqz    $t2, 1f                 /* if !bCacheActive, update */
+    nop
+    b       2f
+    nop
+1:
+    sw      $zero, GSU_CACHEFLAG_OFF($s0)   /* vCacheFlags = 0 */
+    sw      $t0, GSU_CACHEBASE_OFF($s0)     /* vCacheBaseReg = c */
+    li      $t3, 1
+    sb      $t3, GSU_BCACHEACTIVE_OFF($s0)  /* bCacheActive = 1 */
+2:
+    addiu   $s2, $s2, 1             /* R15++ */
+    andi    $s6, $s6, 0xEFFF        /* CLRFLAGS */
+    addu    $s4, $s0, $zero
+    j       .Lfx_dispatch_loop
+    addu    $s5, $s0, $zero
+
 .Lop_nop:
     /* NOP: CLRFLAGS; R15++ */
     addiu   $s2, $s2, 1

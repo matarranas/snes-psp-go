@@ -5,7 +5,7 @@
 fx_mips_jump_table:
     .word .Lop_stop /* 0x000 (ALT0: 0x00) */
     .word .Lop_nop /* 0x001 (ALT0: 0x01) */
-    .word .Lop_default_fallback /* 0x002 (ALT0: 0x02) */
+    .word .Lop_cache /* 0x002 (ALT0: 0x02) */
     .word .Lop_lsr /* 0x003 (ALT0: 0x03) */
     .word .Lop_rol /* 0x004 (ALT0: 0x04) */
     .word .Lop_bra /* 0x005 (ALT0: 0x05) */
@@ -155,12 +155,12 @@ fx_mips_jump_table:
     .word .Lop_sex /* 0x095 (ALT0: 0x95) */
     .word .Lop_asr /* 0x096 (ALT0: 0x96) */
     .word .Lop_ror /* 0x097 (ALT0: 0x97) */
-    .word .Lop_default_fallback /* 0x098 (ALT0: 0x98) */
-    .word .Lop_default_fallback /* 0x099 (ALT0: 0x99) */
-    .word .Lop_default_fallback /* 0x09A (ALT0: 0x9A) */
-    .word .Lop_default_fallback /* 0x09B (ALT0: 0x9B) */
-    .word .Lop_default_fallback /* 0x09C (ALT0: 0x9C) */
-    .word .Lop_default_fallback /* 0x09D (ALT0: 0x9D) */
+    .word .Lop_jmp /* 0x098 (ALT0: 0x98) */
+    .word .Lop_jmp /* 0x099 (ALT0: 0x99) */
+    .word .Lop_jmp /* 0x09A (ALT0: 0x9A) */
+    .word .Lop_jmp /* 0x09B (ALT0: 0x9B) */
+    .word .Lop_jmp /* 0x09C (ALT0: 0x9C) */
+    .word .Lop_jmp /* 0x09D (ALT0: 0x9D) */
     .word .Lop_lob /* 0x09E (ALT0: 0x9E) */
     .word .Lop_fmult /* 0x09F (ALT0: 0x9F) */
     .word .Lop_ibt_rn /* 0x0A0 (ALT0: 0xA0) */
@@ -411,12 +411,12 @@ fx_mips_jump_table:
     .word .Lop_sex /* 0x195 (ALT1: 0x95) */
     .word .Lop_asr /* 0x196 (ALT1: 0x96) */
     .word .Lop_ror /* 0x197 (ALT1: 0x97) */
-    .word .Lop_default_fallback /* 0x198 (ALT1: 0x98) */
-    .word .Lop_default_fallback /* 0x199 (ALT1: 0x99) */
-    .word .Lop_default_fallback /* 0x19A (ALT1: 0x9A) */
-    .word .Lop_default_fallback /* 0x19B (ALT1: 0x9B) */
-    .word .Lop_default_fallback /* 0x19C (ALT1: 0x9C) */
-    .word .Lop_default_fallback /* 0x19D (ALT1: 0x9D) */
+    .word .Lop_ljmp /* 0x198 (ALT1: 0x98) */
+    .word .Lop_ljmp /* 0x199 (ALT1: 0x99) */
+    .word .Lop_ljmp /* 0x19A (ALT1: 0x9A) */
+    .word .Lop_ljmp /* 0x19B (ALT1: 0x9B) */
+    .word .Lop_ljmp /* 0x19C (ALT1: 0x9C) */
+    .word .Lop_ljmp /* 0x19D (ALT1: 0x9D) */
     .word .Lop_lob /* 0x19E (ALT1: 0x9E) */
     .word .Lop_fmult /* 0x19F (ALT1: 0x9F) */
     .word .Lop_ibt_rn /* 0x1A0 (ALT1: 0xA0) */
