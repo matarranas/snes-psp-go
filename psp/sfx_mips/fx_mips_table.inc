@@ -8,17 +8,17 @@ fx_mips_jump_table:
     .word .Lop_cache /* 0x002 (ALT0: 0x02) */
     .word .Lop_lsr /* 0x003 (ALT0: 0x03) */
     .word .Lop_rol /* 0x004 (ALT0: 0x04) */
-    .word .Lop_bra /* 0x005 (ALT0: 0x05) */
-    .word .Lop_blt /* 0x006 (ALT0: 0x06) */
-    .word .Lop_bge /* 0x007 (ALT0: 0x07) */
-    .word .Lop_bne /* 0x008 (ALT0: 0x08) */
-    .word .Lop_beq /* 0x009 (ALT0: 0x09) */
-    .word .Lop_bpl /* 0x00A (ALT0: 0x0A) */
-    .word .Lop_bmi /* 0x00B (ALT0: 0x0B) */
-    .word .Lop_bcc /* 0x00C (ALT0: 0x0C) */
-    .word .Lop_bcs /* 0x00D (ALT0: 0x0D) */
-    .word .Lop_bvc /* 0x00E (ALT0: 0x0E) */
-    .word .Lop_bvs /* 0x00F (ALT0: 0x0F) */
+    .word .Lop_default_fallback /* 0x005 (ALT0: 0x05) BRA */
+    .word .Lop_default_fallback /* 0x006 (ALT0: 0x06) BLT */
+    .word .Lop_default_fallback /* 0x007 (ALT0: 0x07) BGE */
+    .word .Lop_default_fallback /* 0x008 (ALT0: 0x08) BNE */
+    .word .Lop_default_fallback /* 0x009 (ALT0: 0x09) BEQ */
+    .word .Lop_default_fallback /* 0x00A (ALT0: 0x0A) BPL */
+    .word .Lop_default_fallback /* 0x00B (ALT0: 0x0B) BMI */
+    .word .Lop_default_fallback /* 0x00C (ALT0: 0x0C) BCC */
+    .word .Lop_default_fallback /* 0x00D (ALT0: 0x0D) BCS */
+    .word .Lop_default_fallback /* 0x00E (ALT0: 0x0E) BVC */
+    .word .Lop_default_fallback /* 0x00F (ALT0: 0x0F) BVS */
     .word .Lop_to_rn /* 0x010 (ALT0: 0x10) */
     .word .Lop_to_rn /* 0x011 (ALT0: 0x11) */
     .word .Lop_to_rn /* 0x012 (ALT0: 0x12) */
@@ -155,12 +155,12 @@ fx_mips_jump_table:
     .word .Lop_sex /* 0x095 (ALT0: 0x95) */
     .word .Lop_asr /* 0x096 (ALT0: 0x96) */
     .word .Lop_ror /* 0x097 (ALT0: 0x97) */
-    .word .Lop_jmp /* 0x098 (ALT0: 0x98) */
-    .word .Lop_jmp /* 0x099 (ALT0: 0x99) */
-    .word .Lop_jmp /* 0x09A (ALT0: 0x9A) */
-    .word .Lop_jmp /* 0x09B (ALT0: 0x9B) */
-    .word .Lop_jmp /* 0x09C (ALT0: 0x9C) */
-    .word .Lop_jmp /* 0x09D (ALT0: 0x9D) */
+    .word .Lop_default_fallback /* 0x098 (ALT0: 0x98) JMP */
+    .word .Lop_default_fallback /* 0x099 (ALT0: 0x99) JMP */
+    .word .Lop_default_fallback /* 0x09A (ALT0: 0x9A) JMP */
+    .word .Lop_default_fallback /* 0x09B (ALT0: 0x9B) JMP */
+    .word .Lop_default_fallback /* 0x09C (ALT0: 0x9C) JMP */
+    .word .Lop_default_fallback /* 0x09D (ALT0: 0x9D) JMP */
     .word .Lop_lob /* 0x09E (ALT0: 0x9E) */
     .word .Lop_fmult /* 0x09F (ALT0: 0x9F) */
     .word .Lop_ibt_rn /* 0x0A0 (ALT0: 0xA0) */
@@ -411,12 +411,12 @@ fx_mips_jump_table:
     .word .Lop_sex /* 0x195 (ALT1: 0x95) */
     .word .Lop_asr /* 0x196 (ALT1: 0x96) */
     .word .Lop_ror /* 0x197 (ALT1: 0x97) */
-    .word .Lop_ljmp /* 0x198 (ALT1: 0x98) */
-    .word .Lop_ljmp /* 0x199 (ALT1: 0x99) */
-    .word .Lop_ljmp /* 0x19A (ALT1: 0x9A) */
-    .word .Lop_ljmp /* 0x19B (ALT1: 0x9B) */
-    .word .Lop_ljmp /* 0x19C (ALT1: 0x9C) */
-    .word .Lop_ljmp /* 0x19D (ALT1: 0x9D) */
+    .word .Lop_default_fallback /* 0x198 (ALT1: 0x98) LJMP */
+    .word .Lop_default_fallback /* 0x199 (ALT1: 0x99) LJMP */
+    .word .Lop_default_fallback /* 0x19A (ALT1: 0x9A) LJMP */
+    .word .Lop_default_fallback /* 0x19B (ALT1: 0x9B) LJMP */
+    .word .Lop_default_fallback /* 0x19C (ALT1: 0x9C) LJMP */
+    .word .Lop_default_fallback /* 0x19D (ALT1: 0x9D) LJMP */
     .word .Lop_lob /* 0x19E (ALT1: 0x9E) */
     .word .Lop_fmult /* 0x19F (ALT1: 0x9F) */
     .word .Lop_ibt_rn /* 0x1A0 (ALT1: 0xA0) */
