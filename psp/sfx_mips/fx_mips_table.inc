@@ -63,7 +63,7 @@ fx_mips_jump_table:
     .word .Lop_stw_rn /* 0x039 (ALT0: 0x39) */
     .word .Lop_stw_rn /* 0x03A (ALT0: 0x3A) */
     .word .Lop_stw_rn /* 0x03B (ALT0: 0x3B) */
-    .word .Lop_loop /* 0x03C (ALT0: 0x3C) */
+    .word .Lop_default_fallback /* 0x03C (ALT0: 0x3C) LOOP -> fallback */
     .word .Lop_alt1 /* 0x03D (ALT0: 0x3D) */
     .word .Lop_alt2 /* 0x03E (ALT0: 0x3E) */
     .word .Lop_alt3 /* 0x03F (ALT0: 0x3F) */
@@ -319,7 +319,7 @@ fx_mips_jump_table:
     .word .Lop_stb_rn /* 0x139 (ALT1: 0x39) */
     .word .Lop_stb_rn /* 0x13A (ALT1: 0x3A) */
     .word .Lop_stb_rn /* 0x13B (ALT1: 0x3B) */
-    .word .Lop_loop /* 0x13C (ALT1: 0x3C) */
+    .word .Lop_default_fallback /* 0x13C (ALT1: 0x3C) LOOP -> fallback */
     .word .Lop_alt1 /* 0x13D (ALT1: 0x3D) */
     .word .Lop_alt2 /* 0x13E (ALT1: 0x3E) */
     .word .Lop_alt3 /* 0x13F (ALT1: 0x3F) */
@@ -575,7 +575,7 @@ fx_mips_jump_table:
     .word .Lop_stw_rn /* 0x239 (ALT2: 0x39) */
     .word .Lop_stw_rn /* 0x23A (ALT2: 0x3A) */
     .word .Lop_stw_rn /* 0x23B (ALT2: 0x3B) */
-    .word .Lop_loop /* 0x23C (ALT2: 0x3C) */
+    .word .Lop_default_fallback /* 0x23C (ALT2: 0x3C) LOOP -> fallback */
     .word .Lop_alt1 /* 0x23D (ALT2: 0x3D) */
     .word .Lop_alt2 /* 0x23E (ALT2: 0x3E) */
     .word .Lop_alt3 /* 0x23F (ALT2: 0x3F) */
@@ -831,7 +831,7 @@ fx_mips_jump_table:
     .word .Lop_stb_rn /* 0x339 (ALT3: 0x39) */
     .word .Lop_stb_rn /* 0x33A (ALT3: 0x3A) */
     .word .Lop_stb_rn /* 0x33B (ALT3: 0x3B) */
-    .word .Lop_loop /* 0x33C (ALT3: 0x3C) */
+    .word .Lop_default_fallback /* 0x33C (ALT3: 0x3C) LOOP -> fallback */
     .word .Lop_alt1 /* 0x33D (ALT3: 0x3D) */
     .word .Lop_alt2 /* 0x33E (ALT3: 0x3E) */
     .word .Lop_alt3 /* 0x33F (ALT3: 0x3F) */
