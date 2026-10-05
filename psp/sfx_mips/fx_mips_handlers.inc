@@ -36,47 +36,58 @@
     j       .Lfx_dispatch_loop
     addu    $s5, $s0, $zero
 
-/* 0x05: BRA */
+/* 0x05: BRA - Branch Always */
 .Lop_bra:
+    lbu     $t0, GSU_PIPE_OFF($s0)  /* $t0 = v (offset from PIPE) */
+    seb     $t0, $t0                /* sign-extend 8-bit offset */
+    addiu   $s2, $s2, 1             /* R15++ */
     andi    $t1, $s2, 0xFFFF
     addu    $t2, $s3, $t1
-    lb      $t0, 0($t2)          /* signed 8-bit offset */
-    addiu   $s2, $s2, 1
-    addu    $s2, $s2, $t0
+    lbu     $t7, 0($t2)             /* FETCHPIPE */
+    sb      $t7, GSU_PIPE_OFF($s0)  /* PIPE = PRGBANK(R15) */
+    addu    $s2, $s2, $t0           /* R15 += SEX8(v) */
     j       .Lfx_dispatch_loop
     nop
 
 /* 0x06: BLT - Branch on Less Than ((TEST_S != 0) != (TEST_OV != 0)) */
 .Lop_blt:
-    lw      $t4, GSU_VSIGN_OFF($s0)
-    lw      $t5, GSU_VOVERFLOW_OFF($s0)
+    lbu     $t0, GSU_PIPE_OFF($s0)  /* $t0 = v (offset from PIPE) */
+    seb     $t0, $t0                /* sign-extend 8-bit offset */
+    addiu   $s2, $s2, 1             /* R15++ */
     andi    $t1, $s2, 0xFFFF
     addu    $t2, $s3, $t1
-    lb      $t0, 0($t2)
+    lbu     $t7, 0($t2)             /* FETCHPIPE */
+    sb      $t7, GSU_PIPE_OFF($s0)  /* PIPE = PRGBANK(R15) */
+    lw      $t4, GSU_VSIGN_OFF($s0)
+    lw      $t5, GSU_VOVERFLOW_OFF($s0)
     andi    $t4, $t4, 0x8000
-    srl     $t4, $t4, 15         /* sign bit (0 or 1) */
+    srl     $t4, $t4, 15            /* sign bit (0 or 1) */
     slti    $t6, $t5, 0x8000
-    xori    $t6, $t6, 1          /* overflow high (0 or 1) */
+    xori    $t6, $t6, 1             /* overflow high (0 or 1) */
     li      $t7, -0x8000
-    slt     $t7, $t5, $t7        /* overflow low (0 or 1) */
-    or      $t6, $t6, $t7        /* ov != 0 */
-    xor     $t8, $t4, $t6        /* cond = (sign != 0) != (ov != 0) */
+    slt     $t7, $t5, $t7           /* overflow low (0 or 1) */
+    or      $t6, $t6, $t7           /* ov != 0 */
+    xor     $t8, $t4, $t6           /* cond = (sign != 0) != (ov != 0) */
     bnez    $t8, 1f
-    addiu   $s2, $s2, 1          /* advance past offset byte */
-    addiu   $s2, $s2, 1          /* not taken: R15++ extra */
+    nop
+    addiu   $s2, $s2, 1             /* not taken: R15++ */
     j       .Lfx_dispatch_loop
     nop
-1:  addu    $s2, $s2, $t0
+1:  addu    $s2, $s2, $t0           /* taken: R15 += SEX8(v) */
     j       .Lfx_dispatch_loop
     nop
 
 /* 0x07: BGE - Branch on Greater or Equal ((TEST_S != 0) == (TEST_OV != 0)) */
 .Lop_bge:
-    lw      $t4, GSU_VSIGN_OFF($s0)
-    lw      $t5, GSU_VOVERFLOW_OFF($s0)
+    lbu     $t0, GSU_PIPE_OFF($s0)
+    seb     $t0, $t0
+    addiu   $s2, $s2, 1             /* R15++ */
     andi    $t1, $s2, 0xFFFF
     addu    $t2, $s3, $t1
-    lb      $t0, 0($t2)
+    lbu     $t7, 0($t2)             /* FETCHPIPE */
+    sb      $t7, GSU_PIPE_OFF($s0)
+    lw      $t4, GSU_VSIGN_OFF($s0)
+    lw      $t5, GSU_VOVERFLOW_OFF($s0)
     andi    $t4, $t4, 0x8000
     srl     $t4, $t4, 15
     slti    $t6, $t5, 0x8000
@@ -86,148 +97,179 @@
     or      $t6, $t6, $t7
     xor     $t8, $t4, $t6
     beqz    $t8, 1f
-    addiu   $s2, $s2, 1
-    addiu   $s2, $s2, 1
+    nop
+    addiu   $s2, $s2, 1             /* not taken: R15++ */
     j       .Lfx_dispatch_loop
     nop
-1:  addu    $s2, $s2, $t0
+1:  addu    $s2, $s2, $t0           /* taken: R15 += SEX8(v) */
     j       .Lfx_dispatch_loop
     nop
 
 /* 0x08: BNE */
 .Lop_bne:
-    lw      $t4, GSU_VZERO_OFF($s0)
+    lbu     $t0, GSU_PIPE_OFF($s0)
+    seb     $t0, $t0
+    addiu   $s2, $s2, 1             /* R15++ */
     andi    $t1, $s2, 0xFFFF
     addu    $t2, $s3, $t1
-    lb      $t0, 0($t2)
+    lbu     $t7, 0($t2)             /* FETCHPIPE */
+    sb      $t7, GSU_PIPE_OFF($s0)
+    lw      $t4, GSU_VZERO_OFF($s0)
     andi    $t4, $t4, 0xFFFF
     bnez    $t4, 1f
-    addiu   $s2, $s2, 1          /* delay slot: always advance past offset byte */
-    /* Not branched: R15++ an extra time as per SuperFX pipeline */
-    addiu   $s2, $s2, 1
+    nop
+    addiu   $s2, $s2, 1             /* not taken: R15++ */
     j       .Lfx_dispatch_loop
     nop
-1:  addu    $s2, $s2, $t0
+1:  addu    $s2, $s2, $t0           /* taken: R15 += SEX8(v) */
     j       .Lfx_dispatch_loop
     nop
 
 /* 0x09: BEQ */
 .Lop_beq:
-    lw      $t4, GSU_VZERO_OFF($s0)
+    lbu     $t0, GSU_PIPE_OFF($s0)
+    seb     $t0, $t0
+    addiu   $s2, $s2, 1             /* R15++ */
     andi    $t1, $s2, 0xFFFF
     addu    $t2, $s3, $t1
-    lb      $t0, 0($t2)
+    lbu     $t7, 0($t2)             /* FETCHPIPE */
+    sb      $t7, GSU_PIPE_OFF($s0)
+    lw      $t4, GSU_VZERO_OFF($s0)
     andi    $t4, $t4, 0xFFFF
     beqz    $t4, 1f
-    addiu   $s2, $s2, 1
-    addiu   $s2, $s2, 1
+    nop
+    addiu   $s2, $s2, 1             /* not taken: R15++ */
     j       .Lfx_dispatch_loop
     nop
-1:  addu    $s2, $s2, $t0
+1:  addu    $s2, $s2, $t0           /* taken: R15 += SEX8(v) */
     j       .Lfx_dispatch_loop
     nop
 
 /* 0x0A: BPL */
 .Lop_bpl:
-    lw      $t4, GSU_VSIGN_OFF($s0)
+    lbu     $t0, GSU_PIPE_OFF($s0)
+    seb     $t0, $t0
+    addiu   $s2, $s2, 1             /* R15++ */
     andi    $t1, $s2, 0xFFFF
     addu    $t2, $s3, $t1
-    lb      $t0, 0($t2)
+    lbu     $t7, 0($t2)             /* FETCHPIPE */
+    sb      $t7, GSU_PIPE_OFF($s0)
+    lw      $t4, GSU_VSIGN_OFF($s0)
     andi    $t4, $t4, 0x8000
     beqz    $t4, 1f
-    addiu   $s2, $s2, 1
-    addiu   $s2, $s2, 1
+    nop
+    addiu   $s2, $s2, 1             /* not taken: R15++ */
     j       .Lfx_dispatch_loop
     nop
-1:  addu    $s2, $s2, $t0
+1:  addu    $s2, $s2, $t0           /* taken: R15 += SEX8(v) */
     j       .Lfx_dispatch_loop
     nop
 
 /* 0x0B: BMI */
 .Lop_bmi:
-    lw      $t4, GSU_VSIGN_OFF($s0)
+    lbu     $t0, GSU_PIPE_OFF($s0)
+    seb     $t0, $t0
+    addiu   $s2, $s2, 1             /* R15++ */
     andi    $t1, $s2, 0xFFFF
     addu    $t2, $s3, $t1
-    lb      $t0, 0($t2)
+    lbu     $t7, 0($t2)             /* FETCHPIPE */
+    sb      $t7, GSU_PIPE_OFF($s0)
+    lw      $t4, GSU_VSIGN_OFF($s0)
     andi    $t4, $t4, 0x8000
     bnez    $t4, 1f
-    addiu   $s2, $s2, 1
-    addiu   $s2, $s2, 1
+    nop
+    addiu   $s2, $s2, 1             /* not taken: R15++ */
     j       .Lfx_dispatch_loop
     nop
-1:  addu    $s2, $s2, $t0
+1:  addu    $s2, $s2, $t0           /* taken: R15 += SEX8(v) */
     j       .Lfx_dispatch_loop
     nop
 
 /* 0x0C: BCC */
 .Lop_bcc:
-    lw      $t4, GSU_VCARRY_OFF($s0)
+    lbu     $t0, GSU_PIPE_OFF($s0)
+    seb     $t0, $t0
+    addiu   $s2, $s2, 1             /* R15++ */
     andi    $t1, $s2, 0xFFFF
     addu    $t2, $s3, $t1
-    lb      $t0, 0($t2)
+    lbu     $t7, 0($t2)             /* FETCHPIPE */
+    sb      $t7, GSU_PIPE_OFF($s0)
+    lw      $t4, GSU_VCARRY_OFF($s0)
     andi    $t4, $t4, 1
     beqz    $t4, 1f
-    addiu   $s2, $s2, 1
-    addiu   $s2, $s2, 1
+    nop
+    addiu   $s2, $s2, 1             /* not taken: R15++ */
     j       .Lfx_dispatch_loop
     nop
-1:  addu    $s2, $s2, $t0
+1:  addu    $s2, $s2, $t0           /* taken: R15 += SEX8(v) */
     j       .Lfx_dispatch_loop
     nop
 
 /* 0x0D: BCS */
 .Lop_bcs:
-    lw      $t4, GSU_VCARRY_OFF($s0)
+    lbu     $t0, GSU_PIPE_OFF($s0)
+    seb     $t0, $t0
+    addiu   $s2, $s2, 1             /* R15++ */
     andi    $t1, $s2, 0xFFFF
     addu    $t2, $s3, $t1
-    lb      $t0, 0($t2)
+    lbu     $t7, 0($t2)             /* FETCHPIPE */
+    sb      $t7, GSU_PIPE_OFF($s0)
+    lw      $t4, GSU_VCARRY_OFF($s0)
     andi    $t4, $t4, 1
     bnez    $t4, 1f
-    addiu   $s2, $s2, 1
-    addiu   $s2, $s2, 1
+    nop
+    addiu   $s2, $s2, 1             /* not taken: R15++ */
     j       .Lfx_dispatch_loop
     nop
-1:  addu    $s2, $s2, $t0
+1:  addu    $s2, $s2, $t0           /* taken: R15 += SEX8(v) */
     j       .Lfx_dispatch_loop
     nop
 
 /* 0x0E: BVC - Branch on Overflow Clear (!TEST_OV) */
 .Lop_bvc:
-    lw      $t5, GSU_VOVERFLOW_OFF($s0)
+    lbu     $t0, GSU_PIPE_OFF($s0)
+    seb     $t0, $t0
+    addiu   $s2, $s2, 1             /* R15++ */
     andi    $t1, $s2, 0xFFFF
     addu    $t2, $s3, $t1
-    lb      $t0, 0($t2)
+    lbu     $t7, 0($t2)             /* FETCHPIPE */
+    sb      $t7, GSU_PIPE_OFF($s0)
+    lw      $t5, GSU_VOVERFLOW_OFF($s0)
     slti    $t6, $t5, 0x8000
-    xori    $t6, $t6, 1          /* overflow high (0 or 1) */
+    xori    $t6, $t6, 1             /* overflow high (0 or 1) */
     li      $t7, -0x8000
-    slt     $t7, $t5, $t7        /* overflow low (0 or 1) */
-    or      $t6, $t6, $t7        /* ov != 0 */
-    beqz    $t6, 1f              /* if ov == 0, branch taken! */
-    addiu   $s2, $s2, 1
-    addiu   $s2, $s2, 1
+    slt     $t7, $t5, $t7           /* overflow low (0 or 1) */
+    or      $t6, $t6, $t7           /* ov != 0 */
+    beqz    $t6, 1f                 /* if ov == 0, branch taken! */
+    nop
+    addiu   $s2, $s2, 1             /* not taken: R15++ */
     j       .Lfx_dispatch_loop
     nop
-1:  addu    $s2, $s2, $t0
+1:  addu    $s2, $s2, $t0           /* taken: R15 += SEX8(v) */
     j       .Lfx_dispatch_loop
     nop
 
 /* 0x0F: BVS - Branch on Overflow Set (TEST_OV) */
 .Lop_bvs:
-    lw      $t5, GSU_VOVERFLOW_OFF($s0)
+    lbu     $t0, GSU_PIPE_OFF($s0)
+    seb     $t0, $t0
+    addiu   $s2, $s2, 1             /* R15++ */
     andi    $t1, $s2, 0xFFFF
     addu    $t2, $s3, $t1
-    lb      $t0, 0($t2)
+    lbu     $t7, 0($t2)             /* FETCHPIPE */
+    sb      $t7, GSU_PIPE_OFF($s0)
+    lw      $t5, GSU_VOVERFLOW_OFF($s0)
     slti    $t6, $t5, 0x8000
     xori    $t6, $t6, 1
     li      $t7, -0x8000
     slt     $t7, $t5, $t7
     or      $t6, $t6, $t7
-    bnez    $t6, 1f              /* if ov != 0, branch taken! */
-    addiu   $s2, $s2, 1
-    addiu   $s2, $s2, 1
+    bnez    $t6, 1f                 /* if ov != 0, branch taken! */
+    nop
+    addiu   $s2, $s2, 1             /* not taken: R15++ */
     j       .Lfx_dispatch_loop
     nop
-1:  addu    $s2, $s2, $t0
+1:  addu    $s2, $s2, $t0           /* taken: R15 += SEX8(v) */
     j       .Lfx_dispatch_loop
     nop
 

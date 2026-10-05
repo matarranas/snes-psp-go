@@ -97,19 +97,36 @@
 
 /* =========================================================================
  * IBT Rn,#pp (0xA0 - 0xAF): Immediate Byte Transfer to Rn
+ * uint8 v = PIPE; R15++; FETCHPIPE; R15++; Rn = SEX8(v); CLRFLAGS;
  * ========================================================================= */
 .Lop_ibt_rn:
     andi    $t0, $t3, 0x0F
     sll     $t0, $t0, 2
     addu    $t0, $s0, $t0           /* &GSU.avReg[n] */
 
-    andi    $t1, $s2, 0xFFFF
-    addu    $t2, $s3, $t1
-    lb      $t4, 0($t2)             /* Sign-extended byte */
-    addiu   $s2, $s2, 1             /* R15++ */
+    lbu     $t4, GSU_PIPE_OFF($s0)  /* v = PIPE */
+    seb     $t4, $t4                /* SEX8(v) */
     andi    $t4, $t4, 0xFFFF
     sw      $t4, 0($t0)             /* Rn = SEX8(v) */
 
+    addiu   $s2, $s2, 1             /* R15++ */
+    andi    $t1, $s2, 0xFFFF
+    addu    $t2, $s3, $t1
+    lbu     $t7, 0($t2)             /* FETCHPIPE */
+    sb      $t7, GSU_PIPE_OFF($s0)
+    addiu   $s2, $s2, 1             /* R15++ */
+
+    /* If Rn == R14, READR14 */
+    andi    $t1, $t3, 0x0F
+    xori    $t1, $t1, 14
+    bnez    $t1, 1f
+    nop
+    lw      $t6, GSU_ROMBANK_PTR($s0)
+    addu    $t6, $t6, $t4
+    lbu     $t8, 0($t6)
+    sb      $t8, GSU_ROMBUF_OFF($s0)
+
+1:
     andi    $s6, $s6, 0xEFFF        /* CLRFLAGS */
     addu    $s4, $s0, $zero
     j       .Lfx_dispatch_loop
@@ -117,38 +134,46 @@
 
 /* =========================================================================
  * IWT Rn,#xx (0xF0 - 0xFF): Immediate Word Transfer to Rn
+ * uint32 v = PIPE; R15++; FETCHPIPE; R15++;
+ * v |= USEX8(PIPE) << 8; FETCHPIPE; R15++;
+ * Rn = v; CLRFLAGS;
  * ========================================================================= */
 .Lop_iwt_rn:
     andi    $t0, $t3, 0x0F
     sll     $t0, $t0, 2
     addu    $t0, $s0, $t0           /* &GSU.avReg[n] */
 
-    /* Byte 0 */
+    /* Low byte from PIPE */
+    lbu     $t4, GSU_PIPE_OFF($s0)  /* v = PIPE */
+    addiu   $s2, $s2, 1             /* R15++ */
     andi    $t1, $s2, 0xFFFF
     addu    $t2, $s3, $t1
-    lbu     $t4, 0($t2)
-    addiu   $s2, $s2, 1
+    lbu     $t7, 0($t2)             /* FETCHPIPE */
+    sb      $t7, GSU_PIPE_OFF($s0)
+    addiu   $s2, $s2, 1             /* R15++ */
 
-    /* Byte 1 */
-    andi    $t1, $s2, 0xFFFF
-    addu    $t2, $s3, $t1
-    lbu     $t5, 0($t2)
-    addiu   $s2, $s2, 1
-
+    /* High byte from PIPE */
+    lbu     $t5, GSU_PIPE_OFF($s0)  /* high byte = PIPE */
     sll     $t5, $t5, 8
-    or      $t4, $t4, $t5
+    or      $t4, $t4, $t5           /* v |= PIPE << 8 */
+    andi    $t4, $t4, 0xFFFF
     sw      $t4, 0($t0)             /* Rn = v */
+
+    andi    $t1, $s2, 0xFFFF
+    addu    $t2, $s3, $t1
+    lbu     $t7, 0($t2)             /* FETCHPIPE */
+    sb      $t7, GSU_PIPE_OFF($s0)
+    addiu   $s2, $s2, 1             /* R15++ */
 
     /* If Rn == R14, READR14 */
     andi    $t1, $t3, 0x0F
     xori    $t1, $t1, 14
     bnez    $t1, 1f
     nop
-    andi    $t4, $t4, 0xFFFF
     lw      $t6, GSU_ROMBANK_PTR($s0)
     addu    $t6, $t6, $t4
-    lbu     $t7, 0($t6)
-    sb      $t7, GSU_ROMBUF_OFF($s0)
+    lbu     $t8, 0($t6)
+    sb      $t8, GSU_ROMBUF_OFF($s0)
 
 1:
     andi    $s6, $s6, 0xEFFF        /* CLRFLAGS */
