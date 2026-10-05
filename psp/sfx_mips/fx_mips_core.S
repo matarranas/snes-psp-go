@@ -45,13 +45,14 @@ mips_sfx_run:
     bltz    $s1, .Lfx_exit_loop
     nop
 
-    /* Read byte from ROM/Cache: PIPE = PRGBANK(R15) */
+    /* Current opcode comes from GSU.vPipe: vOpcode = (uint32)PIPE */
+    lbu     $t3, GSU_PIPE_OFF($s0)  /* $t3 = vOpcode */
+
+    /* FETCHPIPE: PIPE = PRGBANK(R15); (Does NOT increment R15 here) */
     andi    $t1, $s2, 0xFFFF        /* Mask R15 to 16 bits */
     addu    $t2, $s3, $t1           /* $t2 = pvPrgBank + (R15 & 0xFFFF) */
-    lbu     $t3, 0($t2)             /* $t3 = Opcode */
-
-    /* Increment R15 (PC) */
-    addiu   $s2, $s2, 1
+    lbu     $t7, 0($t2)             /* $t7 = next byte */
+    sb      $t7, GSU_PIPE_OFF($s0)  /* GSU.vPipe = next byte */
 
     /* Calculate dispatch address in 1024-entry jump table:
      * Index = (vStatusReg & 0x300) | opcode
@@ -70,20 +71,34 @@ mips_sfx_run:
  * ========================================================================= */
 
 .Lop_nop:
-    /* NOP: CLRFLAGS; R15 already incremented */
+    /* NOP: CLRFLAGS; R15++ */
+    addiu   $s2, $s2, 1
     andi    $s6, $s6, 0xEFFF        /* Clear ALT1, ALT2, B flags */
     addu    $s4, $s0, $zero
     j       .Lfx_dispatch_loop
     addu    $s5, $s0, $zero
 
 .Lop_stop:
-    /* STOP: Clear G flag, set counter = 0 */
+    /* STOP: Clear G flag, R15++, vCounter = 0, check IRQ */
     andi    $s6, $s6, 0xFFDF        /* Clear G flag */
+    addiu   $s2, $s2, 1             /* R15++ */
+    sw      $zero, GSU_PLOTOPT_OFF($s0) /* vPlotOptionReg = 0 */
+    li      $t0, 1
+    sb      $t0, GSU_PIPE_OFF($s0)  /* GSU.vPipe = 1 */
+    lw      $t1, GSU_PVREGISTERS_OFF($s0)
+    lbu     $t2, 0x37($t1)          /* pvRegisters[GSU_CFGR] */
+    andi    $t2, $t2, 0x80
+    bnez    $t2, 1f
+    nop
+    ori     $s6, $s6, 0x8000        /* SF(IRQ): bit 15 */
+1:
+    andi    $s6, $s6, 0xEFFF        /* CLRFLAGS */
     j       .Lfx_exit_loop
-    move    $s1, $zero
+    move    $s1, $zero              /* vCounter = 0 */
 
 .Lop_swap:
-    /* SWAP: Swap bytes of SREG */
+    /* SWAP: Swap bytes of SREG; R15++ */
+    addiu   $s2, $s2, 1
     lw      $t0, 0($s4)             /* Load SREG value */
     andi    $t1, $t0, 0x00FF        /* Lower byte */
     srl     $t2, $t0, 8             /* Upper byte */
@@ -98,7 +113,8 @@ mips_sfx_run:
     addu    $s5, $s0, $zero
 
 .Lop_not:
-    /* NOT: Bitwise NOT of SREG */
+    /* NOT: Bitwise NOT of SREG; R15++ */
+    addiu   $s2, $s2, 1
     lw      $t0, 0($s4)             /* Load SREG */
     not     $t1, $t0
     andi    $t1, $t1, 0xFFFF
@@ -111,7 +127,8 @@ mips_sfx_run:
     addu    $s5, $s0, $zero
 
 .Lop_sex:
-    /* SEX: Sign extend 8-bit to 16-bit */
+    /* SEX: Sign extend 8-bit to 16-bit; R15++ */
+    addiu   $s2, $s2, 1
     lw      $t0, 0($s4)
     seb     $t1, $t0                /* Sign extend byte */
     andi    $t1, $t1, 0xFFFF
@@ -124,7 +141,8 @@ mips_sfx_run:
     addu    $s5, $s0, $zero
 
 .Lop_fmult:
-    /* FMULT: 16-bit signed multiplication using MIPS hardware MULT */
+    /* FMULT: 16-bit signed multiplication using MIPS hardware MULT; R15++ */
+    addiu   $s2, $s2, 1
     lw      $t0, 0($s4)             /* SREG */
     lw      $t1, GSU_R6_OFF($s0)    /* R6 */
     seh     $t0, $t0                /* Sign-extend halfword */
@@ -152,9 +170,12 @@ mips_sfx_run:
 #include "fx_mips_rom.inc"
 
 .Lop_default_fallback:
-    /* Default fallback: loop continuation for unimplemented opcodes */
+    /* Default fallback: advance R15, clear flags, continue to avoid infinite loops */
+    addiu   $s2, $s2, 1
+    andi    $s6, $s6, 0xEFFF
+    addu    $s4, $s0, $zero
     j       .Lfx_dispatch_loop
-    nop
+    addu    $s5, $s0, $zero
 
 .Lfx_exit_loop:
     /* Epilogue: Save updated registers back to struct FxRegs_s GSU */

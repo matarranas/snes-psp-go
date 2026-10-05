@@ -15,6 +15,10 @@ for alt in range(4):
     table[base + 0x04] = ".Lop_rol"
     # 0x05: BRA
     table[base + 0x05] = ".Lop_bra"
+    # 0x06: BLT
+    table[base + 0x06] = ".Lop_blt"
+    # 0x07: BGE
+    table[base + 0x07] = ".Lop_bge"
     # Branches 0x08-0x0D
     table[base + 0x08] = ".Lop_bne"
     table[base + 0x09] = ".Lop_beq"
@@ -73,6 +77,7 @@ for alt in range(4):
 for r in range(12):
     table[0 * 256 + 0x30 + r] = ".Lop_stw_rn" # STW
     table[0 * 256 + 0x40 + r] = ".Lop_ldw_rn" # LDW
+table[0 * 256 + 0x4E] = ".Lop_color"
 table[0 * 256 + 0xDF] = ".Lop_getc"
 table[0 * 256 + 0xEF] = ".Lop_getb"
 for r in range(16):

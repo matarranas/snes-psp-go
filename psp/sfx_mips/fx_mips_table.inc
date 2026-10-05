@@ -9,8 +9,8 @@ fx_mips_jump_table:
     .word .Lop_lsr /* 0x003 (ALT0: 0x03) */
     .word .Lop_rol /* 0x004 (ALT0: 0x04) */
     .word .Lop_bra /* 0x005 (ALT0: 0x05) */
-    .word .Lop_default_fallback /* 0x006 (ALT0: 0x06) */
-    .word .Lop_default_fallback /* 0x007 (ALT0: 0x07) */
+    .word .Lop_blt /* 0x006 (ALT0: 0x06) */
+    .word .Lop_bge /* 0x007 (ALT0: 0x07) */
     .word .Lop_bne /* 0x008 (ALT0: 0x08) */
     .word .Lop_beq /* 0x009 (ALT0: 0x09) */
     .word .Lop_bpl /* 0x00A (ALT0: 0x0A) */
@@ -81,7 +81,7 @@ fx_mips_jump_table:
     .word .Lop_ldw_rn /* 0x04B (ALT0: 0x4B) */
     .word .Lop_default_fallback /* 0x04C (ALT0: 0x4C) */
     .word .Lop_swap /* 0x04D (ALT0: 0x4D) */
-    .word .Lop_default_fallback /* 0x04E (ALT0: 0x4E) */
+    .word .Lop_color /* 0x04E (ALT0: 0x4E) */
     .word .Lop_not /* 0x04F (ALT0: 0x4F) */
     .word .Lop_add_rn /* 0x050 (ALT0: 0x50) */
     .word .Lop_add_rn /* 0x051 (ALT0: 0x51) */
@@ -265,8 +265,8 @@ fx_mips_jump_table:
     .word .Lop_lsr /* 0x103 (ALT1: 0x03) */
     .word .Lop_rol /* 0x104 (ALT1: 0x04) */
     .word .Lop_bra /* 0x105 (ALT1: 0x05) */
-    .word .Lop_default_fallback /* 0x106 (ALT1: 0x06) */
-    .word .Lop_default_fallback /* 0x107 (ALT1: 0x07) */
+    .word .Lop_blt /* 0x106 (ALT1: 0x06) */
+    .word .Lop_bge /* 0x107 (ALT1: 0x07) */
     .word .Lop_bne /* 0x108 (ALT1: 0x08) */
     .word .Lop_beq /* 0x109 (ALT1: 0x09) */
     .word .Lop_bpl /* 0x10A (ALT1: 0x0A) */
@@ -521,8 +521,8 @@ fx_mips_jump_table:
     .word .Lop_lsr /* 0x203 (ALT2: 0x03) */
     .word .Lop_rol /* 0x204 (ALT2: 0x04) */
     .word .Lop_bra /* 0x205 (ALT2: 0x05) */
-    .word .Lop_default_fallback /* 0x206 (ALT2: 0x06) */
-    .word .Lop_default_fallback /* 0x207 (ALT2: 0x07) */
+    .word .Lop_blt /* 0x206 (ALT2: 0x06) */
+    .word .Lop_bge /* 0x207 (ALT2: 0x07) */
     .word .Lop_bne /* 0x208 (ALT2: 0x08) */
     .word .Lop_beq /* 0x209 (ALT2: 0x09) */
     .word .Lop_bpl /* 0x20A (ALT2: 0x0A) */
@@ -777,8 +777,8 @@ fx_mips_jump_table:
     .word .Lop_lsr /* 0x303 (ALT3: 0x03) */
     .word .Lop_rol /* 0x304 (ALT3: 0x04) */
     .word .Lop_bra /* 0x305 (ALT3: 0x05) */
-    .word .Lop_default_fallback /* 0x306 (ALT3: 0x06) */
-    .word .Lop_default_fallback /* 0x307 (ALT3: 0x07) */
+    .word .Lop_blt /* 0x306 (ALT3: 0x06) */
+    .word .Lop_bge /* 0x307 (ALT3: 0x07) */
     .word .Lop_bne /* 0x308 (ALT3: 0x08) */
     .word .Lop_beq /* 0x309 (ALT3: 0x09) */
     .word .Lop_bpl /* 0x30A (ALT3: 0x0A) */
