@@ -51,34 +51,34 @@ fx_mips_jump_table:
     .word .Lop_with_rn /* 0x02D (ALT0: 0x2D) */
     .word .Lop_with_rn /* 0x02E (ALT0: 0x2E) */
     .word .Lop_with_rn /* 0x02F (ALT0: 0x2F) */
-    .word .Lop_default_fallback /* 0x030 (ALT0: 0x30) */
-    .word .Lop_default_fallback /* 0x031 (ALT0: 0x31) */
-    .word .Lop_default_fallback /* 0x032 (ALT0: 0x32) */
-    .word .Lop_default_fallback /* 0x033 (ALT0: 0x33) */
-    .word .Lop_default_fallback /* 0x034 (ALT0: 0x34) */
-    .word .Lop_default_fallback /* 0x035 (ALT0: 0x35) */
-    .word .Lop_default_fallback /* 0x036 (ALT0: 0x36) */
-    .word .Lop_default_fallback /* 0x037 (ALT0: 0x37) */
-    .word .Lop_default_fallback /* 0x038 (ALT0: 0x38) */
-    .word .Lop_default_fallback /* 0x039 (ALT0: 0x39) */
-    .word .Lop_default_fallback /* 0x03A (ALT0: 0x3A) */
-    .word .Lop_default_fallback /* 0x03B (ALT0: 0x3B) */
+    .word .Lop_stw_rn /* 0x030 (ALT0: 0x30) */
+    .word .Lop_stw_rn /* 0x031 (ALT0: 0x31) */
+    .word .Lop_stw_rn /* 0x032 (ALT0: 0x32) */
+    .word .Lop_stw_rn /* 0x033 (ALT0: 0x33) */
+    .word .Lop_stw_rn /* 0x034 (ALT0: 0x34) */
+    .word .Lop_stw_rn /* 0x035 (ALT0: 0x35) */
+    .word .Lop_stw_rn /* 0x036 (ALT0: 0x36) */
+    .word .Lop_stw_rn /* 0x037 (ALT0: 0x37) */
+    .word .Lop_stw_rn /* 0x038 (ALT0: 0x38) */
+    .word .Lop_stw_rn /* 0x039 (ALT0: 0x39) */
+    .word .Lop_stw_rn /* 0x03A (ALT0: 0x3A) */
+    .word .Lop_stw_rn /* 0x03B (ALT0: 0x3B) */
     .word .Lop_loop /* 0x03C (ALT0: 0x3C) */
     .word .Lop_alt1 /* 0x03D (ALT0: 0x3D) */
     .word .Lop_alt2 /* 0x03E (ALT0: 0x3E) */
     .word .Lop_alt3 /* 0x03F (ALT0: 0x3F) */
-    .word .Lop_default_fallback /* 0x040 (ALT0: 0x40) */
-    .word .Lop_default_fallback /* 0x041 (ALT0: 0x41) */
-    .word .Lop_default_fallback /* 0x042 (ALT0: 0x42) */
-    .word .Lop_default_fallback /* 0x043 (ALT0: 0x43) */
-    .word .Lop_default_fallback /* 0x044 (ALT0: 0x44) */
-    .word .Lop_default_fallback /* 0x045 (ALT0: 0x45) */
-    .word .Lop_default_fallback /* 0x046 (ALT0: 0x46) */
-    .word .Lop_default_fallback /* 0x047 (ALT0: 0x47) */
-    .word .Lop_default_fallback /* 0x048 (ALT0: 0x48) */
-    .word .Lop_default_fallback /* 0x049 (ALT0: 0x49) */
-    .word .Lop_default_fallback /* 0x04A (ALT0: 0x4A) */
-    .word .Lop_default_fallback /* 0x04B (ALT0: 0x4B) */
+    .word .Lop_ldw_rn /* 0x040 (ALT0: 0x40) */
+    .word .Lop_ldw_rn /* 0x041 (ALT0: 0x41) */
+    .word .Lop_ldw_rn /* 0x042 (ALT0: 0x42) */
+    .word .Lop_ldw_rn /* 0x043 (ALT0: 0x43) */
+    .word .Lop_ldw_rn /* 0x044 (ALT0: 0x44) */
+    .word .Lop_ldw_rn /* 0x045 (ALT0: 0x45) */
+    .word .Lop_ldw_rn /* 0x046 (ALT0: 0x46) */
+    .word .Lop_ldw_rn /* 0x047 (ALT0: 0x47) */
+    .word .Lop_ldw_rn /* 0x048 (ALT0: 0x48) */
+    .word .Lop_ldw_rn /* 0x049 (ALT0: 0x49) */
+    .word .Lop_ldw_rn /* 0x04A (ALT0: 0x4A) */
+    .word .Lop_ldw_rn /* 0x04B (ALT0: 0x4B) */
     .word .Lop_default_fallback /* 0x04C (ALT0: 0x4C) */
     .word .Lop_swap /* 0x04D (ALT0: 0x4D) */
     .word .Lop_default_fallback /* 0x04E (ALT0: 0x4E) */
@@ -226,7 +226,7 @@ fx_mips_jump_table:
     .word .Lop_inc_rn /* 0x0DC (ALT0: 0xDC) */
     .word .Lop_inc_rn /* 0x0DD (ALT0: 0xDD) */
     .word .Lop_inc_rn /* 0x0DE (ALT0: 0xDE) */
-    .word .Lop_default_fallback /* 0x0DF (ALT0: 0xDF) */
+    .word .Lop_getc /* 0x0DF (ALT0: 0xDF) */
     .word .Lop_dec_rn /* 0x0E0 (ALT0: 0xE0) */
     .word .Lop_dec_rn /* 0x0E1 (ALT0: 0xE1) */
     .word .Lop_dec_rn /* 0x0E2 (ALT0: 0xE2) */
@@ -242,7 +242,7 @@ fx_mips_jump_table:
     .word .Lop_dec_rn /* 0x0EC (ALT0: 0xEC) */
     .word .Lop_dec_rn /* 0x0ED (ALT0: 0xED) */
     .word .Lop_dec_rn /* 0x0EE (ALT0: 0xEE) */
-    .word .Lop_default_fallback /* 0x0EF (ALT0: 0xEF) */
+    .word .Lop_getb /* 0x0EF (ALT0: 0xEF) */
     .word .Lop_iwt_rn /* 0x0F0 (ALT0: 0xF0) */
     .word .Lop_iwt_rn /* 0x0F1 (ALT0: 0xF1) */
     .word .Lop_iwt_rn /* 0x0F2 (ALT0: 0xF2) */
@@ -307,34 +307,34 @@ fx_mips_jump_table:
     .word .Lop_with_rn /* 0x12D (ALT1: 0x2D) */
     .word .Lop_with_rn /* 0x12E (ALT1: 0x2E) */
     .word .Lop_with_rn /* 0x12F (ALT1: 0x2F) */
-    .word .Lop_default_fallback /* 0x130 (ALT1: 0x30) */
-    .word .Lop_default_fallback /* 0x131 (ALT1: 0x31) */
-    .word .Lop_default_fallback /* 0x132 (ALT1: 0x32) */
-    .word .Lop_default_fallback /* 0x133 (ALT1: 0x33) */
-    .word .Lop_default_fallback /* 0x134 (ALT1: 0x34) */
-    .word .Lop_default_fallback /* 0x135 (ALT1: 0x35) */
-    .word .Lop_default_fallback /* 0x136 (ALT1: 0x36) */
-    .word .Lop_default_fallback /* 0x137 (ALT1: 0x37) */
-    .word .Lop_default_fallback /* 0x138 (ALT1: 0x38) */
-    .word .Lop_default_fallback /* 0x139 (ALT1: 0x39) */
-    .word .Lop_default_fallback /* 0x13A (ALT1: 0x3A) */
-    .word .Lop_default_fallback /* 0x13B (ALT1: 0x3B) */
+    .word .Lop_stb_rn /* 0x130 (ALT1: 0x30) */
+    .word .Lop_stb_rn /* 0x131 (ALT1: 0x31) */
+    .word .Lop_stb_rn /* 0x132 (ALT1: 0x32) */
+    .word .Lop_stb_rn /* 0x133 (ALT1: 0x33) */
+    .word .Lop_stb_rn /* 0x134 (ALT1: 0x34) */
+    .word .Lop_stb_rn /* 0x135 (ALT1: 0x35) */
+    .word .Lop_stb_rn /* 0x136 (ALT1: 0x36) */
+    .word .Lop_stb_rn /* 0x137 (ALT1: 0x37) */
+    .word .Lop_stb_rn /* 0x138 (ALT1: 0x38) */
+    .word .Lop_stb_rn /* 0x139 (ALT1: 0x39) */
+    .word .Lop_stb_rn /* 0x13A (ALT1: 0x3A) */
+    .word .Lop_stb_rn /* 0x13B (ALT1: 0x3B) */
     .word .Lop_loop /* 0x13C (ALT1: 0x3C) */
     .word .Lop_alt1 /* 0x13D (ALT1: 0x3D) */
     .word .Lop_alt2 /* 0x13E (ALT1: 0x3E) */
     .word .Lop_alt3 /* 0x13F (ALT1: 0x3F) */
-    .word .Lop_default_fallback /* 0x140 (ALT1: 0x40) */
-    .word .Lop_default_fallback /* 0x141 (ALT1: 0x41) */
-    .word .Lop_default_fallback /* 0x142 (ALT1: 0x42) */
-    .word .Lop_default_fallback /* 0x143 (ALT1: 0x43) */
-    .word .Lop_default_fallback /* 0x144 (ALT1: 0x44) */
-    .word .Lop_default_fallback /* 0x145 (ALT1: 0x45) */
-    .word .Lop_default_fallback /* 0x146 (ALT1: 0x46) */
-    .word .Lop_default_fallback /* 0x147 (ALT1: 0x47) */
-    .word .Lop_default_fallback /* 0x148 (ALT1: 0x48) */
-    .word .Lop_default_fallback /* 0x149 (ALT1: 0x49) */
-    .word .Lop_default_fallback /* 0x14A (ALT1: 0x4A) */
-    .word .Lop_default_fallback /* 0x14B (ALT1: 0x4B) */
+    .word .Lop_ldb_rn /* 0x140 (ALT1: 0x40) */
+    .word .Lop_ldb_rn /* 0x141 (ALT1: 0x41) */
+    .word .Lop_ldb_rn /* 0x142 (ALT1: 0x42) */
+    .word .Lop_ldb_rn /* 0x143 (ALT1: 0x43) */
+    .word .Lop_ldb_rn /* 0x144 (ALT1: 0x44) */
+    .word .Lop_ldb_rn /* 0x145 (ALT1: 0x45) */
+    .word .Lop_ldb_rn /* 0x146 (ALT1: 0x46) */
+    .word .Lop_ldb_rn /* 0x147 (ALT1: 0x47) */
+    .word .Lop_ldb_rn /* 0x148 (ALT1: 0x48) */
+    .word .Lop_ldb_rn /* 0x149 (ALT1: 0x49) */
+    .word .Lop_ldb_rn /* 0x14A (ALT1: 0x4A) */
+    .word .Lop_ldb_rn /* 0x14B (ALT1: 0x4B) */
     .word .Lop_default_fallback /* 0x14C (ALT1: 0x4C) */
     .word .Lop_swap /* 0x14D (ALT1: 0x4D) */
     .word .Lop_default_fallback /* 0x14E (ALT1: 0x4E) */
@@ -482,7 +482,7 @@ fx_mips_jump_table:
     .word .Lop_inc_rn /* 0x1DC (ALT1: 0xDC) */
     .word .Lop_inc_rn /* 0x1DD (ALT1: 0xDD) */
     .word .Lop_inc_rn /* 0x1DE (ALT1: 0xDE) */
-    .word .Lop_default_fallback /* 0x1DF (ALT1: 0xDF) */
+    .word .Lop_getc /* 0x1DF (ALT1: 0xDF) */
     .word .Lop_dec_rn /* 0x1E0 (ALT1: 0xE0) */
     .word .Lop_dec_rn /* 0x1E1 (ALT1: 0xE1) */
     .word .Lop_dec_rn /* 0x1E2 (ALT1: 0xE2) */
@@ -498,7 +498,7 @@ fx_mips_jump_table:
     .word .Lop_dec_rn /* 0x1EC (ALT1: 0xEC) */
     .word .Lop_dec_rn /* 0x1ED (ALT1: 0xED) */
     .word .Lop_dec_rn /* 0x1EE (ALT1: 0xEE) */
-    .word .Lop_default_fallback /* 0x1EF (ALT1: 0xEF) */
+    .word .Lop_getbh /* 0x1EF (ALT1: 0xEF) */
     .word .Lop_default_fallback /* 0x1F0 (ALT1: 0xF0) */
     .word .Lop_default_fallback /* 0x1F1 (ALT1: 0xF1) */
     .word .Lop_default_fallback /* 0x1F2 (ALT1: 0xF2) */
@@ -563,34 +563,34 @@ fx_mips_jump_table:
     .word .Lop_with_rn /* 0x22D (ALT2: 0x2D) */
     .word .Lop_with_rn /* 0x22E (ALT2: 0x2E) */
     .word .Lop_with_rn /* 0x22F (ALT2: 0x2F) */
-    .word .Lop_default_fallback /* 0x230 (ALT2: 0x30) */
-    .word .Lop_default_fallback /* 0x231 (ALT2: 0x31) */
-    .word .Lop_default_fallback /* 0x232 (ALT2: 0x32) */
-    .word .Lop_default_fallback /* 0x233 (ALT2: 0x33) */
-    .word .Lop_default_fallback /* 0x234 (ALT2: 0x34) */
-    .word .Lop_default_fallback /* 0x235 (ALT2: 0x35) */
-    .word .Lop_default_fallback /* 0x236 (ALT2: 0x36) */
-    .word .Lop_default_fallback /* 0x237 (ALT2: 0x37) */
-    .word .Lop_default_fallback /* 0x238 (ALT2: 0x38) */
-    .word .Lop_default_fallback /* 0x239 (ALT2: 0x39) */
-    .word .Lop_default_fallback /* 0x23A (ALT2: 0x3A) */
-    .word .Lop_default_fallback /* 0x23B (ALT2: 0x3B) */
+    .word .Lop_stw_rn /* 0x230 (ALT2: 0x30) */
+    .word .Lop_stw_rn /* 0x231 (ALT2: 0x31) */
+    .word .Lop_stw_rn /* 0x232 (ALT2: 0x32) */
+    .word .Lop_stw_rn /* 0x233 (ALT2: 0x33) */
+    .word .Lop_stw_rn /* 0x234 (ALT2: 0x34) */
+    .word .Lop_stw_rn /* 0x235 (ALT2: 0x35) */
+    .word .Lop_stw_rn /* 0x236 (ALT2: 0x36) */
+    .word .Lop_stw_rn /* 0x237 (ALT2: 0x37) */
+    .word .Lop_stw_rn /* 0x238 (ALT2: 0x38) */
+    .word .Lop_stw_rn /* 0x239 (ALT2: 0x39) */
+    .word .Lop_stw_rn /* 0x23A (ALT2: 0x3A) */
+    .word .Lop_stw_rn /* 0x23B (ALT2: 0x3B) */
     .word .Lop_loop /* 0x23C (ALT2: 0x3C) */
     .word .Lop_alt1 /* 0x23D (ALT2: 0x3D) */
     .word .Lop_alt2 /* 0x23E (ALT2: 0x3E) */
     .word .Lop_alt3 /* 0x23F (ALT2: 0x3F) */
-    .word .Lop_default_fallback /* 0x240 (ALT2: 0x40) */
-    .word .Lop_default_fallback /* 0x241 (ALT2: 0x41) */
-    .word .Lop_default_fallback /* 0x242 (ALT2: 0x42) */
-    .word .Lop_default_fallback /* 0x243 (ALT2: 0x43) */
-    .word .Lop_default_fallback /* 0x244 (ALT2: 0x44) */
-    .word .Lop_default_fallback /* 0x245 (ALT2: 0x45) */
-    .word .Lop_default_fallback /* 0x246 (ALT2: 0x46) */
-    .word .Lop_default_fallback /* 0x247 (ALT2: 0x47) */
-    .word .Lop_default_fallback /* 0x248 (ALT2: 0x48) */
-    .word .Lop_default_fallback /* 0x249 (ALT2: 0x49) */
-    .word .Lop_default_fallback /* 0x24A (ALT2: 0x4A) */
-    .word .Lop_default_fallback /* 0x24B (ALT2: 0x4B) */
+    .word .Lop_ldw_rn /* 0x240 (ALT2: 0x40) */
+    .word .Lop_ldw_rn /* 0x241 (ALT2: 0x41) */
+    .word .Lop_ldw_rn /* 0x242 (ALT2: 0x42) */
+    .word .Lop_ldw_rn /* 0x243 (ALT2: 0x43) */
+    .word .Lop_ldw_rn /* 0x244 (ALT2: 0x44) */
+    .word .Lop_ldw_rn /* 0x245 (ALT2: 0x45) */
+    .word .Lop_ldw_rn /* 0x246 (ALT2: 0x46) */
+    .word .Lop_ldw_rn /* 0x247 (ALT2: 0x47) */
+    .word .Lop_ldw_rn /* 0x248 (ALT2: 0x48) */
+    .word .Lop_ldw_rn /* 0x249 (ALT2: 0x49) */
+    .word .Lop_ldw_rn /* 0x24A (ALT2: 0x4A) */
+    .word .Lop_ldw_rn /* 0x24B (ALT2: 0x4B) */
     .word .Lop_default_fallback /* 0x24C (ALT2: 0x4C) */
     .word .Lop_swap /* 0x24D (ALT2: 0x4D) */
     .word .Lop_default_fallback /* 0x24E (ALT2: 0x4E) */
@@ -754,7 +754,7 @@ fx_mips_jump_table:
     .word .Lop_dec_rn /* 0x2EC (ALT2: 0xEC) */
     .word .Lop_dec_rn /* 0x2ED (ALT2: 0xED) */
     .word .Lop_dec_rn /* 0x2EE (ALT2: 0xEE) */
-    .word .Lop_default_fallback /* 0x2EF (ALT2: 0xEF) */
+    .word .Lop_getbl /* 0x2EF (ALT2: 0xEF) */
     .word .Lop_iwt_rn /* 0x2F0 (ALT2: 0xF0) */
     .word .Lop_iwt_rn /* 0x2F1 (ALT2: 0xF1) */
     .word .Lop_iwt_rn /* 0x2F2 (ALT2: 0xF2) */
@@ -819,34 +819,34 @@ fx_mips_jump_table:
     .word .Lop_with_rn /* 0x32D (ALT3: 0x2D) */
     .word .Lop_with_rn /* 0x32E (ALT3: 0x2E) */
     .word .Lop_with_rn /* 0x32F (ALT3: 0x2F) */
-    .word .Lop_default_fallback /* 0x330 (ALT3: 0x30) */
-    .word .Lop_default_fallback /* 0x331 (ALT3: 0x31) */
-    .word .Lop_default_fallback /* 0x332 (ALT3: 0x32) */
-    .word .Lop_default_fallback /* 0x333 (ALT3: 0x33) */
-    .word .Lop_default_fallback /* 0x334 (ALT3: 0x34) */
-    .word .Lop_default_fallback /* 0x335 (ALT3: 0x35) */
-    .word .Lop_default_fallback /* 0x336 (ALT3: 0x36) */
-    .word .Lop_default_fallback /* 0x337 (ALT3: 0x37) */
-    .word .Lop_default_fallback /* 0x338 (ALT3: 0x38) */
-    .word .Lop_default_fallback /* 0x339 (ALT3: 0x39) */
-    .word .Lop_default_fallback /* 0x33A (ALT3: 0x3A) */
-    .word .Lop_default_fallback /* 0x33B (ALT3: 0x3B) */
+    .word .Lop_stb_rn /* 0x330 (ALT3: 0x30) */
+    .word .Lop_stb_rn /* 0x331 (ALT3: 0x31) */
+    .word .Lop_stb_rn /* 0x332 (ALT3: 0x32) */
+    .word .Lop_stb_rn /* 0x333 (ALT3: 0x33) */
+    .word .Lop_stb_rn /* 0x334 (ALT3: 0x34) */
+    .word .Lop_stb_rn /* 0x335 (ALT3: 0x35) */
+    .word .Lop_stb_rn /* 0x336 (ALT3: 0x36) */
+    .word .Lop_stb_rn /* 0x337 (ALT3: 0x37) */
+    .word .Lop_stb_rn /* 0x338 (ALT3: 0x38) */
+    .word .Lop_stb_rn /* 0x339 (ALT3: 0x39) */
+    .word .Lop_stb_rn /* 0x33A (ALT3: 0x3A) */
+    .word .Lop_stb_rn /* 0x33B (ALT3: 0x3B) */
     .word .Lop_loop /* 0x33C (ALT3: 0x3C) */
     .word .Lop_alt1 /* 0x33D (ALT3: 0x3D) */
     .word .Lop_alt2 /* 0x33E (ALT3: 0x3E) */
     .word .Lop_alt3 /* 0x33F (ALT3: 0x3F) */
-    .word .Lop_default_fallback /* 0x340 (ALT3: 0x40) */
-    .word .Lop_default_fallback /* 0x341 (ALT3: 0x41) */
-    .word .Lop_default_fallback /* 0x342 (ALT3: 0x42) */
-    .word .Lop_default_fallback /* 0x343 (ALT3: 0x43) */
-    .word .Lop_default_fallback /* 0x344 (ALT3: 0x44) */
-    .word .Lop_default_fallback /* 0x345 (ALT3: 0x45) */
-    .word .Lop_default_fallback /* 0x346 (ALT3: 0x46) */
-    .word .Lop_default_fallback /* 0x347 (ALT3: 0x47) */
-    .word .Lop_default_fallback /* 0x348 (ALT3: 0x48) */
-    .word .Lop_default_fallback /* 0x349 (ALT3: 0x49) */
-    .word .Lop_default_fallback /* 0x34A (ALT3: 0x4A) */
-    .word .Lop_default_fallback /* 0x34B (ALT3: 0x4B) */
+    .word .Lop_ldb_rn /* 0x340 (ALT3: 0x40) */
+    .word .Lop_ldb_rn /* 0x341 (ALT3: 0x41) */
+    .word .Lop_ldb_rn /* 0x342 (ALT3: 0x42) */
+    .word .Lop_ldb_rn /* 0x343 (ALT3: 0x43) */
+    .word .Lop_ldb_rn /* 0x344 (ALT3: 0x44) */
+    .word .Lop_ldb_rn /* 0x345 (ALT3: 0x45) */
+    .word .Lop_ldb_rn /* 0x346 (ALT3: 0x46) */
+    .word .Lop_ldb_rn /* 0x347 (ALT3: 0x47) */
+    .word .Lop_ldb_rn /* 0x348 (ALT3: 0x48) */
+    .word .Lop_ldb_rn /* 0x349 (ALT3: 0x49) */
+    .word .Lop_ldb_rn /* 0x34A (ALT3: 0x4A) */
+    .word .Lop_ldb_rn /* 0x34B (ALT3: 0x4B) */
     .word .Lop_default_fallback /* 0x34C (ALT3: 0x4C) */
     .word .Lop_swap /* 0x34D (ALT3: 0x4D) */
     .word .Lop_default_fallback /* 0x34E (ALT3: 0x4E) */
@@ -1010,7 +1010,7 @@ fx_mips_jump_table:
     .word .Lop_dec_rn /* 0x3EC (ALT3: 0xEC) */
     .word .Lop_dec_rn /* 0x3ED (ALT3: 0xED) */
     .word .Lop_dec_rn /* 0x3EE (ALT3: 0xEE) */
-    .word .Lop_default_fallback /* 0x3EF (ALT3: 0xEF) */
+    .word .Lop_getbs /* 0x3EF (ALT3: 0xEF) */
     .word .Lop_iwt_rn /* 0x3F0 (ALT3: 0xF0) */
     .word .Lop_iwt_rn /* 0x3F1 (ALT3: 0xF1) */
     .word .Lop_iwt_rn /* 0x3F2 (ALT3: 0xF2) */

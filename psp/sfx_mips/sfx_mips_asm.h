@@ -43,6 +43,7 @@
 #define GSU_ROMBUF_OFF    108
 #define GSU_PIPE_OFF      109
 
+#define GSU_RAMBANK_PTR   464
 #define GSU_ROMBANK_PTR   468
 #define GSU_PBR_PTR       472
 #define GSU_VCOUNT_OFF    2036

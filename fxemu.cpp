@@ -144,6 +144,7 @@
 #include "memmap.h"
 #include "fxemu.h"
 #include "fxinst.h"
+#include "psp/sfx_mips/sfx_mips.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -612,9 +613,13 @@ void S9xSuperFXExec ()
 			
 	GSU.vCounter = nInstructions;
 	READR14;
-    while (TF(G) && GSU.vCounter-- > 0)
+
+	/* Run native MIPS monolithic core for Super FX */
+	mips_sfx_run(nInstructions);
+
+	/* Fallback / finish any remaining cycles if needed */
+	while (TF(G) && GSU.vCounter-- > 0)
 	{
-		/* Execute instruction from the pipe, and fetch next byte to the pipe*/
 		uint32	vOpcode = (uint32) PIPE;
 		FETCHPIPE;
 		(*fx_ppfOpcodeTable[(GSU.vStatusReg & 0x300) | vOpcode])();

@@ -70,6 +70,11 @@ for alt in range(4):
             table[base + 0xF0 + r] = ".Lop_iwt_rn"
 
 # ALT0 specifics (alt = 0)
+for r in range(12):
+    table[0 * 256 + 0x30 + r] = ".Lop_stw_rn" # STW
+    table[0 * 256 + 0x40 + r] = ".Lop_ldw_rn" # LDW
+table[0 * 256 + 0xDF] = ".Lop_getc"
+table[0 * 256 + 0xEF] = ".Lop_getb"
 for r in range(16):
     table[0 * 256 + 0x50 + r] = ".Lop_add_rn"
     table[0 * 256 + 0x60 + r] = ".Lop_sub_rn"
@@ -78,6 +83,11 @@ for r in range(1, 16):
     table[0 * 256 + 0xC0 + r] = ".Lop_or_rn"
 
 # ALT1 specifics (alt = 1)
+for r in range(12):
+    table[1 * 256 + 0x30 + r] = ".Lop_stb_rn" # STB
+    table[1 * 256 + 0x40 + r] = ".Lop_ldb_rn" # LDB
+table[1 * 256 + 0xDF] = ".Lop_getc"
+table[1 * 256 + 0xEF] = ".Lop_getbh"
 for r in range(16):
     table[1 * 256 + 0x50 + r] = ".Lop_adc_rn"
     table[1 * 256 + 0x60 + r] = ".Lop_sbc_rn"
@@ -85,7 +95,17 @@ for r in range(1, 16):
     table[1 * 256 + 0x70 + r] = ".Lop_bic_rn"
     table[1 * 256 + 0xC0 + r] = ".Lop_xor_rn"
 
+# ALT2 specifics (alt = 2)
+for r in range(12):
+    table[2 * 256 + 0x30 + r] = ".Lop_stw_rn" # STW
+    table[2 * 256 + 0x40 + r] = ".Lop_ldw_rn" # LDW
+table[2 * 256 + 0xEF] = ".Lop_getbl"
+
 # ALT3 specifics (alt = 3)
+for r in range(12):
+    table[3 * 256 + 0x30 + r] = ".Lop_stb_rn" # STB
+    table[3 * 256 + 0x40 + r] = ".Lop_ldb_rn" # LDB
+table[3 * 256 + 0xEF] = ".Lop_getbs"
 for r in range(16):
     table[3 * 256 + 0x60 + r] = ".Lop_cmp_rn"
 

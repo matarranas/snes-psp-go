@@ -144,10 +144,12 @@ mips_sfx_run:
     j       .Lfx_dispatch_loop
     addu    $s5, $s0, $zero
 
-/* Include Monolithic Handlers (Branches, Shifts, Modes, Arithmetic, Transfers) */
+/* Include Monolithic Handlers (Branches, Shifts, Modes, Arithmetic, Transfers, RAM, ROM) */
 #include "fx_mips_handlers.inc"
 #include "fx_mips_arith.inc"
 #include "fx_mips_transfers.inc"
+#include "fx_mips_ram.inc"
+#include "fx_mips_rom.inc"
 
 .Lop_default_fallback:
     /* Default fallback: loop continuation for unimplemented opcodes */
