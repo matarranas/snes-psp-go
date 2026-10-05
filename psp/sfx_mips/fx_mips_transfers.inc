@@ -109,12 +109,12 @@
     andi    $t4, $t4, 0xFFFF
     sw      $t4, 0($t0)             /* Rn = SEX8(v) */
 
-    addiu   $s2, $s2, 1             /* R15++ */
+    /* Fetch next instruction into PIPE */
     andi    $t1, $s2, 0xFFFF
     addu    $t2, $s3, $t1
     lbu     $t7, 0($t2)             /* FETCHPIPE */
     sb      $t7, GSU_PIPE_OFF($s0)
-    addiu   $s2, $s2, 1             /* R15++ */
+    addiu   $s2, $s2, 1             /* R15++ past next instruction */
 
     /* If Rn == R14, READR14 */
     andi    $t1, $t3, 0x0F
@@ -134,9 +134,6 @@
 
 /* =========================================================================
  * IWT Rn,#xx (0xF0 - 0xFF): Immediate Word Transfer to Rn
- * uint32 v = PIPE; R15++; FETCHPIPE; R15++;
- * v |= USEX8(PIPE) << 8; FETCHPIPE; R15++;
- * Rn = v; CLRFLAGS;
  * ========================================================================= */
 .Lop_iwt_rn:
     andi    $t0, $t3, 0x0F
@@ -144,26 +141,25 @@
     addu    $t0, $s0, $t0           /* &GSU.avReg[n] */
 
     /* Low byte from PIPE */
-    lbu     $t4, GSU_PIPE_OFF($s0)  /* v = PIPE */
-    addiu   $s2, $s2, 1             /* R15++ */
+    lbu     $t4, GSU_PIPE_OFF($s0)  /* v = low byte */
+
+    /* Fetch high byte */
     andi    $t1, $s2, 0xFFFF
     addu    $t2, $s3, $t1
-    lbu     $t7, 0($t2)             /* FETCHPIPE */
-    sb      $t7, GSU_PIPE_OFF($s0)
-    addiu   $s2, $s2, 1             /* R15++ */
+    lbu     $t5, 0($t2)             /* high byte */
+    addiu   $s2, $s2, 1             /* R15++ past high byte */
 
-    /* High byte from PIPE */
-    lbu     $t5, GSU_PIPE_OFF($s0)  /* high byte = PIPE */
     sll     $t5, $t5, 8
-    or      $t4, $t4, $t5           /* v |= PIPE << 8 */
+    or      $t4, $t4, $t5           /* v |= high byte << 8 */
     andi    $t4, $t4, 0xFFFF
     sw      $t4, 0($t0)             /* Rn = v */
 
+    /* Fetch next instruction into PIPE */
     andi    $t1, $s2, 0xFFFF
     addu    $t2, $s3, $t1
     lbu     $t7, 0($t2)             /* FETCHPIPE */
     sb      $t7, GSU_PIPE_OFF($s0)
-    addiu   $s2, $s2, 1             /* R15++ */
+    addiu   $s2, $s2, 1             /* R15++ for next instruction */
 
     /* If Rn == R14, READR14 */
     andi    $t1, $t3, 0x0F

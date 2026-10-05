@@ -48,15 +48,14 @@ mips_sfx_run:
     /* Current opcode comes from GSU.vPipe: vOpcode = (uint32)PIPE */
     lbu     $t3, GSU_PIPE_OFF($s0)  /* $t3 = vOpcode */
 
-    /* FETCHPIPE: PIPE = PRGBANK(R15); (Does NOT increment R15 here) */
+    /* FETCHPIPE: PIPE = PRGBANK(R15); Advance R15 for the instruction */
     andi    $t1, $s2, 0xFFFF        /* Mask R15 to 16 bits */
     addu    $t2, $s3, $t1           /* $t2 = pvPrgBank + (R15 & 0xFFFF) */
     lbu     $t7, 0($t2)             /* $t7 = next byte */
     sb      $t7, GSU_PIPE_OFF($s0)  /* GSU.vPipe = next byte */
+    addiu   $s2, $s2, 1             /* R15++: Advance PC for all 1-byte instructions */
 
     /* Update vPipeAdr = (vPrgBankReg << 16) | R15 */
-    sll     $t8, $s6, 16            /* vPrgBankReg is in bits 8-9 of vStatusReg, but we need the actual value */
-    /* vPrgBankReg is stored at GSU_PRGBANK_OFF (byte) */
     lbu     $t8, GSU_PRGBANK_OFF($s0)
     sll     $t8, $t8, 16
     or      $t8, $t8, $s2
@@ -105,24 +104,21 @@ mips_sfx_run:
     li      $t3, 1
     sb      $t3, GSU_BCACHEACTIVE_OFF($s0)  /* bCacheActive = 1 */
 2:
-    addiu   $s2, $s2, 1             /* R15++ */
     andi    $s6, $s6, 0xEFFF        /* CLRFLAGS */
     addu    $s4, $s0, $zero
     j       .Lfx_dispatch_loop
     addu    $s5, $s0, $zero
 
 .Lop_nop:
-    /* NOP: CLRFLAGS; R15++ */
-    addiu   $s2, $s2, 1
+    /* NOP: CLRFLAGS */
     andi    $s6, $s6, 0xEFFF        /* Clear ALT1, ALT2, B flags */
     addu    $s4, $s0, $zero
     j       .Lfx_dispatch_loop
     addu    $s5, $s0, $zero
 
 .Lop_stop:
-    /* STOP: Clear G flag, R15++, vCounter = 0, check IRQ */
+    /* STOP: Clear G flag, vCounter = 0, check IRQ */
     andi    $s6, $s6, 0xFFDF        /* Clear G flag */
-    addiu   $s2, $s2, 1             /* R15++ */
     sw      $zero, GSU_PLOTOPT_OFF($s0) /* vPlotOptionReg = 0 */
     li      $t0, 1
     sb      $t0, GSU_PIPE_OFF($s0)  /* GSU.vPipe = 1 */
@@ -138,8 +134,7 @@ mips_sfx_run:
     move    $s1, $zero              /* vCounter = 0 */
 
 .Lop_swap:
-    /* SWAP: Swap bytes of SREG; R15++ */
-    addiu   $s2, $s2, 1
+    /* SWAP: Swap bytes of SREG */
     lw      $t0, 0($s4)             /* Load SREG value */
     andi    $t1, $t0, 0x00FF        /* Lower byte */
     srl     $t2, $t0, 8             /* Upper byte */
@@ -154,8 +149,7 @@ mips_sfx_run:
     addu    $s5, $s0, $zero
 
 .Lop_not:
-    /* NOT: Bitwise NOT of SREG; R15++ */
-    addiu   $s2, $s2, 1
+    /* NOT: Bitwise NOT of SREG */
     lw      $t0, 0($s4)             /* Load SREG */
     not     $t1, $t0
     andi    $t1, $t1, 0xFFFF
@@ -168,8 +162,7 @@ mips_sfx_run:
     addu    $s5, $s0, $zero
 
 .Lop_sex:
-    /* SEX: Sign extend 8-bit to 16-bit; R15++ */
-    addiu   $s2, $s2, 1
+    /* SEX: Sign extend 8-bit to 16-bit */
     lw      $t0, 0($s4)
     seb     $t1, $t0                /* Sign extend byte */
     andi    $t1, $t1, 0xFFFF
@@ -182,8 +175,7 @@ mips_sfx_run:
     addu    $s5, $s0, $zero
 
 .Lop_fmult:
-    /* FMULT: 16-bit signed multiplication using MIPS hardware MULT; R15++ */
-    addiu   $s2, $s2, 1
+    /* FMULT: 16-bit signed multiplication using MIPS hardware MULT */
     lw      $t0, 0($s4)             /* SREG */
     lw      $t1, GSU_R6_OFF($s0)    /* R6 */
     seh     $t0, $t0                /* Sign-extend halfword */
@@ -212,13 +204,14 @@ mips_sfx_run:
 
 .Lop_default_fallback:
     /* Opcode not handled natively in assembly:
-     * MIPS's FETCHPIPE (at loop top) already loaded PRGBANK(R15) into PIPE.
-     * At this point R15 points to the fallback instruction (not yet executed).
-     * So PIPE = current fallback instruction. DO NOT restore $t3 (that was PREVIOUS instruction).
-     * Update vPipeAdr = (vPrgBankReg << 16) | R15 for C++ fallback.
-     * Adjust vCounter: MIPS decremented for this instruction but didn't execute it;
-     * C++ fallback will execute it, so add 1 back.
+     * 1. Rewind R15: Dispatch loop incremented R15, but C++ will execute this opcode and increment R15.
+     * 2. Restore PIPE: Dispatch loop loaded next byte into PIPE. Restore $t3 (the fallback opcode) so C++ executes it.
+     * 3. Update vPipeAdr = (vPrgBankReg << 16) | R15.
+     * 4. Compensate vCounter: MIPS pre-decremented for this instruction, so add 1 back.
      */
+    addiu   $s2, $s2, -1                /* Rewind R15 to the fallback opcode */
+    sb      $t3, GSU_PIPE_OFF($s0)      /* Restore unhandled opcode into GSU.vPipe */
+
     /* Update vPipeAdr = (vPrgBankReg << 16) | R15 */
     lbu     $t8, GSU_PRGBANK_OFF($s0)
     sll     $t8, $t8, 16
@@ -226,7 +219,6 @@ mips_sfx_run:
     sw      $t8, GSU_PIPEADR_OFF($s0)
 
     addiu   $s1, $s1, 1                 /* Compensate for MIPS pre-decrement of fallback instruction */
-    /* Save updated status register and exit core loop to let C++ fallback run */
     j       .Lfx_exit_loop
     nop
 

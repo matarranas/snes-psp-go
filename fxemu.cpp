@@ -614,7 +614,10 @@ void S9xSuperFXExec ()
 	GSU.vCounter = nInstructions;
 	READR14;
 
-	/* Run 100% C++ reference core */
+	/* Run native MIPS monolithic core for Super FX */
+	mips_sfx_run(nInstructions);
+
+	/* Fallback / finish any remaining cycles if needed */
 	while (TF(G) && GSU.vCounter-- > 0)
 	{
 		uint32	vOpcode = (uint32) PIPE;
