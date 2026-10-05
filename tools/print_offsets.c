@@ -68,11 +68,31 @@ struct FxRegs_s
 };
 
 int main() {
-    printf("#define GSU_PBR_PTR       %zu\n", offsetof(struct FxRegs_s, pvPrgBank));
-    printf("#define GSU_ROMBANK_PTR   %zu\n", offsetof(struct FxRegs_s, pvRomBank));
-    printf("#define GSU_RAMBANK_PTR   %zu\n", offsetof(struct FxRegs_s, pvRamBank));
-    printf("#define GSU_ROMBUF_OFF    %zu\n", offsetof(struct FxRegs_s, vRomBuffer));
-    printf("#define GSU_PIPE_OFF      %zu\n", offsetof(struct FxRegs_s, vPipe));
-    printf("#define GSU_VCOUNT_OFF    %zu\n", offsetof(struct FxRegs_s, vCounter));
+    printf("GSU_COLOR_OFF     %zu\n", offsetof(struct FxRegs_s, vColorReg));
+    printf("GSU_PLOTOPT_OFF   %zu\n", offsetof(struct FxRegs_s, vPlotOptionReg));
+    printf("GSU_STATUS_OFF    %zu\n", offsetof(struct FxRegs_s, vStatusReg));
+    printf("GSU_PRGBANK_OFF   %zu\n", offsetof(struct FxRegs_s, vPrgBankReg));
+    printf("GSU_ROMBANK_OFF   %zu\n", offsetof(struct FxRegs_s, vRomBankReg));
+    printf("GSU_RAMBANK_OFF   %zu\n", offsetof(struct FxRegs_s, vRamBankReg));
+    printf("GSU_CACHEBASE_OFF %zu\n", offsetof(struct FxRegs_s, vCacheBaseReg));
+    printf("GSU_CACHEFLAG_OFF %zu\n", offsetof(struct FxRegs_s, vCacheFlags));
+    printf("GSU_LASTRAM_OFF   %zu\n", offsetof(struct FxRegs_s, vLastRamAdr));
+    printf("GSU_DREG_OFF      %zu\n", offsetof(struct FxRegs_s, pvDreg));
+    printf("GSU_SREG_OFF      %zu\n", offsetof(struct FxRegs_s, pvSreg));
+    printf("GSU_ROMBUF_OFF    %zu\n", offsetof(struct FxRegs_s, vRomBuffer));
+    printf("GSU_PIPE_OFF      %zu\n", offsetof(struct FxRegs_s, vPipe));
+    printf("GSU_PIPEADR_OFF   %zu\n", offsetof(struct FxRegs_s, vPipeAdr));
+    printf("GSU_VSIGN_OFF     %zu\n", offsetof(struct FxRegs_s, vSign));
+    printf("GSU_VZERO_OFF     %zu\n", offsetof(struct FxRegs_s, vZero));
+    printf("GSU_VCARRY_OFF    %zu\n", offsetof(struct FxRegs_s, vCarry));
+    printf("GSU_VOVERFLOW_OFF %zu\n", offsetof(struct FxRegs_s, vOverflow));
+    printf("GSU_PVREGISTERS_OFF %zu\n", offsetof(struct FxRegs_s, pvRegisters));
+    printf("GSU_RAMBANK_PTR   %zu\n", offsetof(struct FxRegs_s, pvRamBank));
+    printf("GSU_ROMBANK_PTR   %zu\n", offsetof(struct FxRegs_s, pvRomBank));
+    printf("GSU_PBR_PTR       %zu\n", offsetof(struct FxRegs_s, pvPrgBank));
+    printf("GSU_APVROMBANK_OFF %zu\n", offsetof(struct FxRegs_s, apvRomBank));
+    printf("GSU_BCACHEACTIVE_OFF %zu\n", offsetof(struct FxRegs_s, bCacheActive));
+    printf("GSU_VCOUNT_OFF    %zu\n", offsetof(struct FxRegs_s, vCounter));
+    printf("GSU_VINSTCOUNT_OFF %zu\n", offsetof(struct FxRegs_s, vInstCount));
     return 0;
 }
